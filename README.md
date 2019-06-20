@@ -78,6 +78,21 @@ Response :
 }
 
 ```
+### 修改密码
+```
+/user/modifypassword
+POST
+Request: 
+{
+	originPassword : string,
+	newPassword : string
+}
+Response : 
+{
+	token : "userToken"	
+}
+```
+
 ## 云服务模块接口
 ### 获取当前服务器价格
 ```
@@ -122,18 +137,4 @@ User
 }
 ```
 
-### 修改用户角色
-```
-/manager/changerole
-POST
-Request:
-{
-	uid : int,
-	role : int
-}
-Response:
-{
-	success or not
-}
-```
 
