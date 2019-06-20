@@ -20,3 +20,120 @@ https://nodejs.org/en/download/
 用山大学生邮箱验证可以免费使用
 3. 项目结构看上去很复杂但实际上需要看一看的就是views，api和router目录下的内容
 4. 有不懂的问我就可以
+
+#接口
+##用户信息接口
+###注册
+```
+/user/signup
+POST
+Request: 
+{
+	username : string,
+	password : string,
+	introduction : string 个人介绍
+	avatar : string 头像url
+}
+Response : 
+{
+	token : "userToken"	
+}
+```
+###登录
+```
+/user/login
+POST
+Request: 
+{
+	username : string,
+	password : string
+}
+Response : 
+{
+	token : "userToken"	
+}
+```
+###注销
+```
+/user/logout
+POST
+Response : 
+
+```
+###获取用户信息
+先登录获取token 再用token获取用户信息
+```
+/user/info
+GET
+Request : 
+{
+	token: string
+}
+Response : 
+{
+	role: 用户身份
+	introduction : string 个人介绍
+	avatar : string 头像url
+	name : string 用户名
+}
+
+```
+##云服务模块接口
+###获取当前服务器价格
+```
+/cloud/price
+GET
+Request : 
+
+Response : 
+
+	
+```
+###预测价格
+```
+/cloud/predict
+POST
+Request:
+
+Response:
+
+```
+##管理员用户管理模块接口
+###获取用户列表
+需要管理员权限
+```
+/manager/userlist
+GET
+Request:
+
+Response:
+{
+	list : 
+	[
+		User
+	]
+}
+
+User
+{
+	uid: int
+	name: string
+	role: int
+}
+```
+
+###修改用户角色
+```
+/manager/changerole
+POST
+Request:
+{
+	uid : int,
+	role : int
+}
+Response:
+{
+	success or not
+}
+```
+
