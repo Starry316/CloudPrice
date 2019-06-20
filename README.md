@@ -21,9 +21,9 @@ https://nodejs.org/en/download/
 3. 项目结构看上去很复杂但实际上需要看一看的就是views，api和router目录下的内容
 4. 有不懂的问我就可以
 
-#接口
-##用户信息接口
-###注册
+# 接口
+## 用户信息接口
+### 注册
 ```
 /user/signup
 POST
@@ -39,7 +39,7 @@ Response :
 	token : "userToken"	
 }
 ```
-###登录
+### 登录
 ```
 /user/login
 POST
@@ -53,14 +53,14 @@ Response :
 	token : "userToken"	
 }
 ```
-###注销
+### 注销
 ```
 /user/logout
 POST
 Response : 
 
 ```
-###获取用户信息
+### 获取用户信息
 先登录获取token 再用token获取用户信息
 ```
 /user/info
@@ -78,8 +78,8 @@ Response :
 }
 
 ```
-##云服务模块接口
-###获取当前服务器价格
+## 云服务模块接口
+### 获取当前服务器价格
 ```
 /cloud/price
 GET
@@ -89,7 +89,7 @@ Response :
 
 	
 ```
-###预测价格
+### 预测价格
 ```
 /cloud/predict
 POST
@@ -98,8 +98,8 @@ Request:
 Response:
 
 ```
-##管理员用户管理模块接口
-###获取用户列表
+## 管理员用户管理模块接口
+### 获取用户列表
 需要管理员权限
 ```
 /manager/userlist
@@ -122,7 +122,7 @@ User
 }
 ```
 
-###修改用户角色
+### 修改用户角色
 ```
 /manager/changerole
 POST
