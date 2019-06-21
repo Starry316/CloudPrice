@@ -3,15 +3,15 @@
 <!--样式同login/index.vue，其中名称与逻辑有改动-->
 <template>
   <div class="register-container">
-    <el-form ref="loginForm"
+    <el-form ref="registerForm"
              :model="registerForm"
              :rules="registerRules"
-             class="login-form" auto-complete="on" label-position="left">
+             class="register-form" auto-complete="on" label-position="left">
 
       <!--:model是v-bind:model的缩写,将父组件数据传给子组件-->
 <!--  ref：表单被引用时的名称，标识    -->
 <!--  rules：表单验证规则-->
-<!--     -->
+      <!--el-form是一个表单--->
 
       <div class="title-container">
         <h3 class="title">注册</h3>
@@ -55,11 +55,30 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">注册</el-button>
+      <el-form-item prop="code">
+        <span class="svg-container">    <!--短信验证码部分-->
+          <svg-icon icon-class="user" />
+        </span>
+
+        <el-input
+          ref="code"
+
+          v-model="registerForm.code"
+          placeholder="短信验证码"
+          name="code"
+          type="digit"
+          tabindex="1"> <!--ref：获取dom元素或子组件从而调用子组件方法-->
+
+          <template slot="append" @click="sendCode" >发送验证码</template>
+        </el-input>
+
+      </el-form-item>
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
 
       <div class="to_login">
-        <span style="margin-right:20px;">登录</span>
-        <span> password: any</span>
+        <span style="margin-right:20px;" @click="toLogin"><u>已有账号，点击登录！</u></span>
+        <span style="margin-right:20px; float: right" @click="forgetPass"> <u>忘记密码</u> </span>
       </div>
 
     </el-form>
@@ -68,13 +87,14 @@
 
 <script>
   import { validUsername } from '@/utils/validate'
+  import {validateAccount} from "../../utils/validate";  //引入
 
   export default {   //<!--复用一个组件生成另一个-->
     name: 'register',
     data() {
       const validateAccount = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          //需要一个专门的判断是否是有效手机号的方法----------------------------->像validate一样单独成 js？？？
+        if (!validateAccount(value)) {
+
           callback(new Error('Please enter the correct user name'))
         } else {
           callback()
@@ -106,10 +126,13 @@
         redirect: undefined
       }
     },
-    watch: {
+    watch: {//监听路由，当路由发生变化时，
       $route: {
         handler: function(route) {
-          this.redirect = route.query && route.query.redirect  //??????????????????????????????????????????????????????????????????????
+          //$route.query
+          //类型: Object
+          //一个key/value 对象，表示 URL 查询参数。例如，对于路径/foo?user=1，则有 $route.query.user == 1，如果没有查询参数，则是个空对象。
+          this.redirect = route.query && route.query.redirect
         },
         immediate: true    //在watch中声明的时候,就立刻执行handler
       }
@@ -126,14 +149,24 @@
         })
       },
 
-      handleLogin() {
-        this.$refs.registerForm.validate(valid => {
+      sendCode(){
+        this.$store.dispatch('sendCode').then(()=>{
+          //发送成功开始倒计时
+        })
+
+      },
+
+      handleRegister() {
+        this.$refs.registerForm.validate(valid => {//ref的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？?????？？？？？？？？？？？？？？？？
           if (valid) {
             this.loading = true
 
-            this.$store.dispatch('user/login', this.registerForm).then(() => {
 
-              this.$router.push({ path: this.redirect || '/' })
+            this.$store.dispatch('user/register', this.registerForm).then(() => {  //异步向后台提交数据，'user/register'应该是后台的方法名
+
+              //这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL。
+              this.$router.push({ path: this.redirect || '/' }) //实现路由跳转，登录成功后重定向到首页
+
               this.loading = false
             }).catch(() => {
               this.loading = false
@@ -157,15 +190,15 @@
   $cursor: #fff;
 
   @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-    .login-container .el-input input {
+    .register-container .el-input input {
       color: $cursor;
     }
   }
 
   /* reset element-ui css */
-  .login-container {
+  .register-container {
     .el-input {
-      display: inline-block;
+      /*display: inline-block;*/
       height: 47px;
       width: 85%;
 
@@ -178,6 +211,7 @@
         color: $light_gray;
         height: 47px;
         caret-color: $cursor;
+
 
         &:-webkit-autofill {
           box-shadow: 0 0 0px 1000px $bg inset !important;
@@ -200,13 +234,13 @@
   $dark_gray:#889aa4;
   $light_gray:#eee;
 
-  .login-container {
+  .register-container {
     min-height: 100%;
     width: 100%;
     background-color: $bg;
     overflow: hidden;
 
-    .login-form {
+    .register-form {
       position: relative;
       width: 520px;
       max-width: 100%;
@@ -215,7 +249,7 @@
       overflow: hidden;
     }
 
-    .tips {
+    .to_login {
       font-size: 14px;
       color: #fff;
       margin-bottom: 10px;
@@ -247,6 +281,8 @@
       }
     }
 
+
+
     .show-pwd {
       position: absolute;
       right: 10px;
@@ -255,6 +291,10 @@
       color: $dark_gray;
       cursor: pointer;
       user-select: none;
+    }
+
+    .input-with-select .el-input-group__prepend {
+      background-color: #fff;
     }
   }
 </style>

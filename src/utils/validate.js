@@ -19,3 +19,9 @@ export function validUsername(str) {
     return false;
   return true;
 }
+
+export function validateAccount(phone){
+  if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(phone)))
+    return false;
+  return true;
+}

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-Vue.use(Router)
+Vue.use(Router) //导入Vue和VueRouter
 
 /* Layout */
 import Layout from '@/layout'
@@ -38,7 +38,7 @@ export const constantRoutes = [
   },
 
 
-
+//定义路由，每个路由映射一个组件
   {
     path: '/',
     component: Layout,
@@ -185,7 +185,7 @@ export const constantRoutes = [
 export const adminRoutes = [
 
   {
-    path: '/graph',
+    path: '/graph',   //从path重定向到redirect
     component: Layout,
     redirect: '/graph/index',
     children: [{
@@ -213,6 +213,7 @@ export const errorRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+//创建路由实例
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
@@ -228,3 +229,6 @@ export function resetRouter() {
 }
 
 export default router
+
+//注入路由器，我们可以在任何组件内通过 this.$router 访问路由器，也可以通过 this.$route 访问当前路由
+//创建和挂载根实例？？？？？？？？？？？？？？？？？？？？？？？？？？？
