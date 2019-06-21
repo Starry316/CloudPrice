@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-
+import { hex_sha1 } from '@/utils/sha1.js'
 const state = {
   token: getToken(),
   name: '',
@@ -43,7 +43,7 @@ const actions = {
   register({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      register({ username: username.trim(), password: password ,introduction:null,avatar:null}).then(response => {
+      register({ username: username.trim(), password: hex_sha1(password)  ,introduction:null,avatar:null}).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)

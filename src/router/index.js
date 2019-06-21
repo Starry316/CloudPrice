@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Echarts from 'echarts'
 
 Vue.use(Router) //导入Vue和VueRouter
+Vue.prototype.$echarts = Echarts
 
 /* Layout */
 import Layout from '@/layout'
@@ -32,16 +34,16 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
 
-  {
-    path: '/login',//path的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-    component: () => import('@/views/login/register'),
-    hidden: false
-  },
   // {
-  //   path: '/login',
-  //   component: () => import('@/views/login/index'),
+  //   path: '/login',//path的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+  //   component: () => import('@/views/login/register'),
   //   hidden: false
   // },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: false
+  },
 
 
 

@@ -5,7 +5,7 @@
   - mock/ 用于接口测试 可以先不看
   - public/ 静态资源 不用看
   - src
-    - api/ 接口请求方法 配置请求url 方法等
+    - api/ 接口请求方法 配置请求url 方法等``
     - assets/ 资源文件
     - components/ 公用组件 不用管
     - layout/ 页面框架 不用管
