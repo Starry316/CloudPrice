@@ -22,3 +22,19 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function modifyProfile(data) {
+  return request({
+    url: '/user/modifyProfile',
+    method: 'post',
+    params:{ data }
+  })
+}
+
+export function modifyPassword(data) {
+  return request({
+    url: '/user/modifyPassword',
+    method: 'post',
+    params:{ data }
+  })
+}
