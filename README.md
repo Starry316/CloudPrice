@@ -109,6 +109,29 @@ Response :
 
 
 ## 云服务模块接口
+### 获取当前服务器列表
+```
+/cloud/list
+GET
+Request : 
+
+Response : 
+{
+  list: [ Server ], 服务器列表
+  typeList: [ string ] 目前有的服务器型号列表
+  serverRoomList: [ string ] 目前可用的机房列表
+}
+	
+Server
+{
+  id: int, 
+  serverRoom: string, 机房位置
+  type: string,  型号
+  os: string, 操作系统
+}
+```
+
+
 ### 获取当前服务器价格
 ```
 /cloud/price
