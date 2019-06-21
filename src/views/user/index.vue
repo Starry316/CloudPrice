@@ -1,41 +1,83 @@
 <template>
 
-  <div class="user-container">
+  <div class="user-container" v-loading="loading">
     <el-container >
       <el-container>
         <el-aside width="20%" style="margin-right: 1rem;" >
           <el-card :body-style="{ padding: '0px' }">
             <img :src="avatar" width="100%">
+
             <div style="padding: 14px;">
               <span style="text-align: center"><h3>{{name}}</h3></span>
 
               <div class="bottom clearfix">
+                <el-row>
 
-                <el-button
-                  v-if="!isEditing"
-                  @click="editProfile" style="float: right" type="warning" icon="el-icon-edit" circle></el-button>
-                <el-button
-                  v-if="isEditing"
-                  @click="editCancel" style="float: right" type="danger" icon="el-icon-edit" circle></el-button>
-                <!--<el-button type="text" class="button">操作按钮</el-button>-->
+                  <el-col :span="8" :offset="16">
+                    <el-upload
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :before-upload="beforeAvatarUpload"
+                      style="display: inline"
+                    >
+                      <el-button
+                        style="float: right" type="primary"
+                        icon="el-icon-upload2"
+                        circle>
+                      </el-button>
+                    </el-upload>
+                    <el-button
+                      v-if="!isEditing"
+                      @click="editProfile" style="float: right" type="warning" icon="el-icon-edit" circle></el-button>
+                    <el-button
+                      v-if="isEditing"
+                      @click="editCancel" style="float: right" type="danger" icon="el-icon-edit" circle></el-button>
+                    <!--<el-button type="text" class="button">操作按钮</el-button>-->
+                  </el-col>
+                </el-row>
+
+
               </div>
             </div>
           </el-card>
         </el-aside>
         <el-container style="background-color: white">
           <el-main>
-            <div>
-              <h3>个人信息</h3>
-              <span v-if="!isEditing">{{introdution}}</span>
-            </div>
+            <!--个人介绍-->
+            <h3>个人信息</h3>
+            <span v-if="!isEditing">{{introduction}}</span>
+            <!--个人介绍修改框-->
+            <el-input v-if="isEditing" style="margin-bottom: 1rem"
+                      type="textarea"
+                      placeholder="请输入内容"
+                      :autosize="{ minRows: 2, maxRows: 4}"
+                      v-model="introduction"
+                      maxlength="30"
+                      show-word-limit>
+            </el-input>
+            <!--个人介绍修改框结束-->
 
-            <el-input v-if="isEditing" style="margin-bottom: 2rem"
-              type="textarea"
-              placeholder="请输入内容"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              v-model="introdution"
-              maxlength="30"
-              show-word-limit>
+
+            <h3>联系方式</h3>
+            <span v-if="!isEditing">电话： {{telephone}}<br><br></span>
+            <span v-if="!isEditing">邮箱： {{email}}</span>
+
+
+            <!--电话信息-->
+            <label v-if="isEditing">电话： </label>
+            <el-input v-if="isEditing" style="margin-bottom: 1rem"
+                      type="text"
+                      placeholder="请输入内容"
+                      v-model="telephone">
+            </el-input>
+
+            <!--邮箱信息-->
+            <label v-if="isEditing">邮箱： </label>
+            <el-input v-if="isEditing" style="margin-bottom: 1rem"
+                      type="text"
+                      placeholder="请输入内容"
+                      v-model="email">
             </el-input>
 
             <el-button
@@ -58,12 +100,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { modifyProfile} from "../../api/user";
+
+
 export default {
 
   data() {
     return {
-      introdution:'用户个人介绍',
+      introduction:'用户个人介绍',
+      // 使用isEditing 标识页面编辑状态
       isEditing: false,
+      telephone:'18340018269',
+      email:'starry@123.com',
+      loading:false
     }
   },
   watch: {
@@ -81,9 +130,47 @@ export default {
     editCancel(){
       this.isEditing = false;
     },
+    showLoading(){
+      this.loading = true;
+    },
+    hideLoading(){
+      this.loading = false;
+    },
     saveProfile(){
-      //TODO
+      this.showLoading();
       this.isEditing = false;
+      let data = {
+        introduction: this.introduction,
+        telephone: this.telephone,
+        email:this.email
+      }
+      modifyProfile(data).then(respone =>{
+        let data = respone.data
+        this.introduction = data.introduction
+        this.telephone = data.telephone
+        this.email = data.email
+        // loading.close();
+        this.hideLoading();
+        this.$message({
+          message: '修改成功！',
+          type: 'success'
+        });
+      });
+    },
+    handleAvatarSuccess(res, file) {
+      this.avatar = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!');
+      // }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
     }
   },
   computed: {
@@ -135,6 +222,12 @@ export default {
   }
   .display-none{
     display: none;
+  }
+
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
 </style>
 

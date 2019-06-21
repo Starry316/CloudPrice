@@ -80,7 +80,7 @@ Response :
 ```
 ### 修改密码
 ```
-/user/modifypassword
+/user/modifyPassword
 POST
 Request: 
 {
@@ -92,6 +92,21 @@ Response :
 	token : "userToken"	
 }
 ```
+### 修改个人信息
+```
+/user/modifyProfile
+POST
+Request: 
+{
+	introduction : string,
+	//todo 其他数据
+}
+Response : 
+{
+	token : "userToken"	
+}
+```
+
 
 ## 云服务模块接口
 ### 获取当前服务器价格
