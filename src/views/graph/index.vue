@@ -2,6 +2,7 @@
   <div class="dashboard-container">
     <div class="dashboard-text">服务器列表</div>
     <el-table
+      v-loading="loading"
       stripe
       :data="tableData.filter(data => !search || data.type.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%">
@@ -47,6 +48,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { list } from '../../api/cloud'
 import LineChart from './components/LineChart'
 export default {
   components: {
@@ -67,34 +69,8 @@ export default {
         {text: 't1.micro', value: 't1.micro'},
         {text: 'a1.medium', value: 'a1.medium'}
       ],
-      tableData: [
-        {
-          id:1,
-          serverRoom:'us-east-1a',
-          type: 'a1.medium',
-          os: 'linux',
-
-        },
-        {
-          id:2,
-          serverRoom:'us-east-1a',
-          type: 'a1.medium',
-          os: 'windows',
-
-        },
-        {
-          id:3,
-          serverRoom:'us-east-1a',
-          type: 'a1.medium',
-          os: 'windows',
-
-        },
-        {
-          id:4,
-          serverRoom:'us-east-1a',
-          type: 'a1.medium',
-          os: 'windows',
-        }],
+      tableData: [],
+      loading: true,
       search:''
     }
   },
@@ -109,6 +85,12 @@ export default {
       const property = column['property'];
       return row[property] === value;
     }
+  },
+  mounted(){
+    list().then(response=>{
+      this.tableData  = response.data.list
+      this.loading = false
+    })
   }
 }
 </script>
