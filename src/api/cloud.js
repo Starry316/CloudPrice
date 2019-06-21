@@ -6,3 +6,12 @@ export function list() {
     method: 'get',
   })
 }
+
+
+export function history(data) {
+  return request({
+    url: '/cloud/history',
+    method: 'get',
+    params: { data }
+  })
+}

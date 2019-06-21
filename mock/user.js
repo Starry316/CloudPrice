@@ -90,9 +90,9 @@ export default [
       return {
         code: 20000,
         data: {
-          introduction: "mock data",
-          telephone: "123456789",
-          email: "123456789@123.com"
+          introduction: 'mock data',
+          telephone: '123456789',
+          email: '123456789@123.com'
         }
       }
     }

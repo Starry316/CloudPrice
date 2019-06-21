@@ -1,7 +1,23 @@
 <template>
   <div class="dashboard-container">
+    <div v-if="showTab==2">
+    <el-button size="mini"
+               icon="el-icon-back"
+               @click="changeTab(1)">返回</el-button>
+    <div class="dashboard-text">历史价格</div>
+    <div class="server-info" >
+      <span>服务器： {{showServer.type}}</span>
+      <span>机房： {{showServer.serverRoom}}</span>
+      <span>系统： {{showServer.os}}</span>
+    </div>
+    <el-row  v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <line-chart :chart-data="lineChartData" />
+    </el-row>
+    </div>
+    <div v-if="showTab==1">
     <div class="dashboard-text">服务器列表</div>
     <el-table
+      height="60vh"
       v-loading="loading"
       stripe
       :data="tableData.filter(data => !search || data.type.toLowerCase().includes(search.toLowerCase()))"
@@ -22,34 +38,28 @@
         label="操作系统"
         prop="os">
       </el-table-column>
-      <el-table-column
-        label="操作"
-        >
-        <!--<template slot="header" slot-scope="scope">-->
-          <!--<el-input-->
-            <!--v-model="search"-->
-            <!--size="mini"-->
-            <!--placeholder="输入关键字搜索"/>-->
-        <!--</template>-->
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row.type)">预测价格</el-button>
+            @click="showPredict(scope.$index, scope.row)">预测价格</el-button>
           <el-button
             size="mini"
             type="warning"
-            @click="handleDelete(scope.$index, scope.row)">历史价格</el-button>
+            @click="showHistory(scope.$index, scope.row)">历史价格</el-button>
         </template>
       </el-table-column>
     </el-table>
-
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { list } from '../../api/cloud'
+import { list, history } from '../../api/cloud'
 import LineChart from './components/LineChart'
+
+
 export default {
   components: {
     LineChart
@@ -61,6 +71,11 @@ export default {
   },
   data() {
     return {
+      lineChartData: {
+        expectedData: [100, 120, 161, 134, 105, 160, 165],
+        actualData: [120, 82, 91, 154, 162, 140, 145]
+
+      },
       osList:[
         {text: 'windows', value: 'windows'},
         {text: 'linux', value: 'linux'}
@@ -71,19 +86,44 @@ export default {
       ],
       tableData: [],
       loading: true,
-      search:''
+      search:'',
+      showTab:1,
+      showServer:{
+        type:'a1-small',
+        serverRoom:'Hong Kong',
+        os:'windows'
+      }
     }
   },
   methods:{
-    handleEdit(index, row) {
-      console.log(index);
+    showHistory(index, row) {
+      this.loading = true
+      this.changeTab(2)
+      this.showServer = {
+        type:row.type,
+        serverRoom:row.serverRoom,
+        os:row.os,
+      }
+      let data = {
+        id: row.id
+      }
+      history(data).then(response=>{
+        this.lineChartData = response.data.list
+        this.loading = false
+
+      })
+
     },
-    handleDelete(index, row) {
-      console.log(row.id);
+    showPredict(index, row) {
+
+      this.changeTab(3)
     },
     filterHandler(value, row, column) {
       const property = column['property'];
       return row[property] === value;
+    },
+    changeTab(tab){
+      this.showTab = tab
     }
   },
   mounted(){
@@ -104,5 +144,11 @@ export default {
     font-size: 30px;
     line-height: 46px;
   }
+}
+.server-info{
+  margin: 1rem 0;
+}
+.server-info span{
+  margin:2rem 1rem 2rem 0;
 }
 </style>
