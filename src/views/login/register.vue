@@ -1,84 +1,54 @@
-
-<!--注册页面-->
-<!--样式同login/index.vue，其中名称与逻辑有改动-->
 <template>
-  <div class="register-container">
-    <el-form ref="registerForm"
-             :model="registerForm"
-             :rules="registerRules"
-             class="register-form" auto-complete="on" label-position="left">
-
-      <!--:model是v-bind:model的缩写,将父组件数据传给子组件-->
-<!--  ref：表单被引用时的名称，标识    -->
-<!--  rules：表单验证规则-->
-      <!--el-form是一个表单--->
+  <div class="signup-container">
+    <el-form ref="signupForm"
+             :model="signupForm"
+             :rules="signupRules"
+             class="signup-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
         <h3 class="title">注册</h3>
       </div>
 
-      <el-form-item prop="account">
-        <span class="svg-container">    <!--span对文字进行样式修改，其父元素的class影响它-->
+      <el-form-item prop="username">
+        <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-
         <el-input
-          ref="account"
-          v-model="registerForm.account"
-          placeholder="手机号"
-          name="account"
-          type="digit"
+          ref="username"
+          v-model="signupForm.username"
+          placeholder="Username"
+          name="username"
+          type="text"
           tabindex="1"
           auto-complete="on"
-        /> <!--ref：获取dom元素或子组件从而调用子组件方法-->
+        />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="registerForm.password"
+          v-model="signupForm.password"
           :type="passwordType"
-          placeholder="密码"
+          placeholder="Password"
           name="password"
           tabindex="2"
           auto-complete="on"
-          @keyup.enter.native="handleLogin"
+          @keyup.enter.native="handleSignup"
         />
-
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
-      <el-form-item prop="code">
-        <span class="svg-container">    <!--短信验证码部分-->
-          <svg-icon icon-class="user" />
-        </span>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleSignup">注册</el-button>
 
-        <el-input
-          ref="code"
-
-          v-model="registerForm.code"
-          placeholder="短信验证码"
-          name="code"
-          type="digit"
-          tabindex="1"> <!--ref：获取dom元素或子组件从而调用子组件方法-->
-
-          <template slot="append" @click="sendCode" >发送验证码</template>
-        </el-input>
-
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
-
-      <div class="to_login">
-        <span style="margin-right:20px;" @click="toLogin"><u>已有账号，点击登录！</u></span>
-        <span style="margin-right:20px; float: right" @click="forgetPass"> <u>忘记密码</u> </span>
+      <div class="tips">
+        <span style="margin-right:20px;">已有账号，直接登录</span>
+        <span style="margin-right:20px; float:right"> 忘记密码</span>
       </div>
 
     </el-form>
@@ -87,54 +57,44 @@
 
 <script>
   import { validUsername } from '@/utils/validate'
-  import {validateAccount} from "../../utils/validate";  //引入
 
-  export default {   //<!--复用一个组件生成另一个-->
-    name: 'register',
+  export default {
+    name: 'Login',
     data() {
-      const validateAccount = (rule, value, callback) => {
-        if (!validateAccount(value)) {
-
-          callback(new Error('Please enter the correct user name'))
+      const validateUsername = (rule, value, callback) => {
+        if (!validUsername(value)) {
+          callback(new Error('请输入正确的用户名！'))
         } else {
           callback()
         }
       }
       const validatePassword = (rule, value, callback) => {
         if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
+          callback(new Error('密码不能少于6位数字！'))
         } else {
           callback()
         }
       }
       return {
-        registerForm: {
-          account: '',
+        signupForm: {
+          username: '',
           password: ''
         },
-
-        //zz检验表单正确性
-        registerRules: {
-          //   <!--blur 失去焦点时触发-->
-          account: [{ required: true, trigger: 'blur', validator: validateAccount }],
+        signupRules: {
+          username: [{ required: true, trigger: 'blur', validator: validateUsername }],
           password: [{ required: true, trigger: 'blur', validator: validatePassword }]
         },
-
         loading: false,
         passwordType: 'password',
-        //重定向到某个url
         redirect: undefined
       }
     },
-    watch: {//监听路由，当路由发生变化时，
+    watch: {
       $route: {
         handler: function(route) {
-          //$route.query
-          //类型: Object
-          //一个key/value 对象，表示 URL 查询参数。例如，对于路径/foo?user=1，则有 $route.query.user == 1，如果没有查询参数，则是个空对象。
           this.redirect = route.query && route.query.redirect
         },
-        immediate: true    //在watch中声明的时候,就立刻执行handler
+        immediate: true
       }
     },
     methods: {
@@ -148,25 +108,14 @@
           this.$refs.password.focus()
         })
       },
-
-      sendCode(){
-        this.$store.dispatch('sendCode').then(()=>{
-          //发送成功开始倒计时
-        })
-
-      },
-
-      handleRegister() {
-        this.$refs.registerForm.validate(valid => {//ref的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？?????？？？？？？？？？？？？？？？？
+      handleSignup() {
+        this.$refs.signupForm.validate(valid => {
           if (valid) {
             this.loading = true
 
+            this.$store.dispatch('user/register', this.signupForm).then(() => { //user指的是user文件
 
-            this.$store.dispatch('user/register', this.registerForm).then(() => {  //异步向后台提交数据，'user/register'应该是后台的方法名
-
-              //这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL。
-              this.$router.push({ path: this.redirect || '/' }) //实现路由跳转，登录成功后重定向到首页
-
+              this.$router.push({ path: this.redirect || '/' })
               this.loading = false
             }).catch(() => {
               this.loading = false
@@ -190,15 +139,15 @@
   $cursor: #fff;
 
   @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-    .register-container .el-input input {
+    .signup-container .el-input input {
       color: $cursor;
     }
   }
 
   /* reset element-ui css */
-  .register-container {
+  .signup-container {
     .el-input {
-      /*display: inline-block;*/
+      display: inline-block;
       height: 47px;
       width: 85%;
 
@@ -211,7 +160,6 @@
         color: $light_gray;
         height: 47px;
         caret-color: $cursor;
-
 
         &:-webkit-autofill {
           box-shadow: 0 0 0px 1000px $bg inset !important;
@@ -234,13 +182,13 @@
   $dark_gray:#889aa4;
   $light_gray:#eee;
 
-  .register-container {
+  .signup-container {
     min-height: 100%;
     width: 100%;
     background-color: $bg;
     overflow: hidden;
 
-    .register-form {
+    .signup-form {
       position: relative;
       width: 520px;
       max-width: 100%;
@@ -249,7 +197,7 @@
       overflow: hidden;
     }
 
-    .to_login {
+    .tips {
       font-size: 14px;
       color: #fff;
       margin-bottom: 10px;
@@ -281,8 +229,6 @@
       }
     }
 
-
-
     .show-pwd {
       position: absolute;
       right: 10px;
@@ -291,10 +237,6 @@
       color: $dark_gray;
       cursor: pointer;
       user-select: none;
-    }
-
-    .input-with-select .el-input-group__prepend {
-      background-color: #fff;
     }
   }
 </style>

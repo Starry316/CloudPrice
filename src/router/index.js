@@ -31,11 +31,20 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
+
   {
-    path: '/login',
+    path: '/login',//path的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
     component: () => import('@/views/login/register'),
     hidden: false
   },
+  // {
+  //   path: '/login',
+  //   component: () => import('@/views/login/index'),
+  //   hidden: false
+  // },
+
+
+
 
 
 //定义路由，每个路由映射一个组件
