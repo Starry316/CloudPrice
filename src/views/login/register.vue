@@ -74,11 +74,11 @@
 
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">注册</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
 
       <div class="to_login">
-        <span style="margin-right:20px;"><u>已有账号，点击登录！</u></span>
-        <span style="margin-right:20px; float: right"> <u>忘记密码</u> </span>
+        <span style="margin-right:20px;" @click="toLogin"><u>已有账号，点击登录！</u></span>
+        <span style="margin-right:20px; float: right" @click="forgetPass"> <u>忘记密码</u> </span>
       </div>
 
     </el-form>
@@ -86,14 +86,15 @@
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'  //引入
+  import { validUsername } from '@/utils/validate'
+  import {validateAccount} from "../../utils/validate";  //引入
 
   export default {   //<!--复用一个组件生成另一个-->
     name: 'register',
     data() {
       const validateAccount = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          //需要一个专门的判断是否是有效手机号的方法----------------------------->像validate一样单独成 js？？？
+        if (!validateAccount(value)) {
+
           callback(new Error('Please enter the correct user name'))
         } else {
           callback()
@@ -149,16 +150,19 @@
       },
 
       sendCode(){
+        this.$store.dispatch('sendCode').then(()=>{
+          //发送成功开始倒计时
+        })
 
-      }
+      },
 
-      handleLogin() {
-        this.$refs.registerForm.validate(valid => {//ref的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+      handleRegister() {
+        this.$refs.registerForm.validate(valid => {//ref的作用？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？?????？？？？？？？？？？？？？？？？
           if (valid) {
             this.loading = true
 
 
-            this.$store.dispatch('user/login', this.registerForm).then(() => {  //异步向后台提交数据，'user/login'应该是后台的方法名
+            this.$store.dispatch('user/register', this.registerForm).then(() => {  //异步向后台提交数据，'user/register'应该是后台的方法名
 
               //这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL。
               this.$router.push({ path: this.redirect || '/' }) //实现路由跳转，登录成功后重定向到首页
