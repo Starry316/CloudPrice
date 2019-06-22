@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function list() {
+export function list(page) {
   return request({
     url: '/cloud/list',
     method: 'get',

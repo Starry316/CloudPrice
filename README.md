@@ -111,9 +111,8 @@ Response :
 ## 云服务模块接口
 ### 获取当前服务器列表
 ```
-/cloud/list
+/cloud/list/{page}
 GET
-Request : 
 
 Response : 
 {
