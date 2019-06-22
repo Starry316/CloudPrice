@@ -73,6 +73,17 @@ export const constantRoutes = [
       meta: { title: '个人信息', icon: 'user' }
     }]
   },
+  // {
+  //   path: '/graph',   //从path重定向到redirect
+  //   component: Layout,
+  //   redirect: '/graph/index',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Graph',
+  //     component: () => import('@/views/graph/index'),
+  //     meta: { title: '会员管理', icon: 'user' }
+  //   }]
+  // },
 
   {
     path: '/price',
@@ -81,7 +92,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: 'Price',
-      component: () => import('@/views/price/index'),
+      component: () => import('@/views/graph/index'),
       meta: { title: '价格查询', icon: 'money' }
     }]
   },
@@ -195,15 +206,16 @@ export const constantRoutes = [
 
 export const adminRoutes = [
 
+
   {
-    path: '/graph',   //从path重定向到redirect
+    path: '/crawler',
     component: Layout,
-    redirect: '/graph/index',
+    // redirect: '/user',
     children: [{
       path: 'index',
-      name: 'Graph',
-      component: () => import('@/views/graph/index'),
-      meta: { title: '会员管理', icon: 'user' }
+      name: 'Crawler',
+      component: () => import('@/views/crawler/index'),
+      meta: { title: '爬虫配置', icon: 'bug' }
     }]
   },
   {

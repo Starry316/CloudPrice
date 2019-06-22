@@ -19,18 +19,35 @@
                       :show-file-list="false"
                       :on-success="handleAvatarSuccess"
                       :before-upload="beforeAvatarUpload"
-                      style="display: inline"
-                    >
-                      <el-button
-                        style="float: right" type="primary"
-                        icon="el-icon-upload2"
-                        circle>
-                      </el-button>
+                      style="display: inline">
+                      <el-popover
+                        placement="bottom"
+                        width="160"
+                        trigger="hover">
+                        <div style="text-align: center; margin: 0">
+                          上传头像
+                        </div>
+                        <el-button
+                          style="float: right" type="primary"
+                          icon="el-icon-upload2"
+                          slot="reference"
+                          circle>
+                        </el-button>
+                      </el-popover>
                     </el-upload>
-                    <el-button
-                      v-if="!isEditing"
-                      @click="editProfile" style="float: right" type="warning" icon="el-icon-edit" circle></el-button>
-                    <el-button
+                    <el-popover
+                      placement="bottom"
+                      width="160"
+                      trigger="hover">
+                      <div style="text-align: center; margin: 0">
+                        修改信息
+                      </div>
+                      <el-button
+                        v-if="!isEditing"
+                        slot="reference"
+                        @click="editProfile" style="float: right" type="warning" icon="el-icon-edit" circle></el-button>
+                    </el-popover>
+                     <el-button
                       v-if="isEditing"
                       @click="editCancel" style="float: right" type="danger" icon="el-icon-edit" circle></el-button>
                     <!--<el-button type="text" class="button">操作按钮</el-button>-->
