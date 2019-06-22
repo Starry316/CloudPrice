@@ -4,7 +4,7 @@
     <div v-if="showTab==2">
       <el-button size="mini"
                  icon="el-icon-back"
-                 @click="changeTab(1)">返回
+                 @click="returnToTable">返回
       </el-button>
 
       <div class="dashboard-text">历史价格</div>
@@ -61,7 +61,7 @@
         height="60vh"
         v-loading="loading"
         stripe
-        :data="tableData.filter(data => !search || data.type.toLowerCase().includes(search.toLowerCase()))"
+        :data="tableData"
         style="width: 100%">
 
         <el-table-column
@@ -99,7 +99,7 @@
         <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
-          :total="50">
+          :total=totalCount>
         </el-pagination>
       </div>
     </div>
@@ -143,6 +143,7 @@
         loading: true,
         search: '',
         showTab: 1,
+        totalCount:50,
         // showServer: {
         //   type: 'a1-small',
         //   serverRoom: 'Hong Kong',
@@ -182,7 +183,7 @@
           id: row.id
         }
         history(data).then(response => {
-          this.tableData = response.data.list
+          // this.tableData = response.data.list
           this.loading = false
 
         })
@@ -202,7 +203,11 @@
         const property = column['property'];
         return row[property] === value;
       },
+      returnToTable(){
+        this.changeTab(1)
 
+        this.tableData = this.bufferTableData.get(1)
+      },
       changeTab(tab) {
         this.showTab = tab
       },
@@ -220,10 +225,12 @@
           this.loading = false
         })
       }
+      //TODO total count
 
     },
     mounted() {
       this.bufferTableData = new Map()
+
       this.getTablePage(1)
     }
 

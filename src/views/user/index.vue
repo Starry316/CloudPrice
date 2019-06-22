@@ -1,6 +1,7 @@
 <template>
 
   <div class="user-container" v-loading="loading">
+
     <el-container >
       <el-container>
         <el-aside width="20%" style="margin-right: 1rem;" >
@@ -118,6 +119,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { modifyProfile} from "../../api/user";
+import ThemePicker from '@/components/ThemePicker'
 
 
 export default {

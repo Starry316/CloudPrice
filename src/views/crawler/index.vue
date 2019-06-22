@@ -9,7 +9,7 @@
         </el-aside>
         <el-container style="background-color: white">
           <el-main>
-
+            <ThemePicker/>
           </el-main>
 
         </el-container>
@@ -22,9 +22,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { modifyProfile} from "../../api/user";
-
+import ThemePicker from '@/components/ThemePicker'
 
 export default {
+  components:{
+    ThemePicker
+  },
 
   data() {
     return {

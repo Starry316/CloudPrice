@@ -106,19 +106,14 @@ Response :
 	token : "userToken"	
 }
 ```
-
-
 ## 云服务模块接口
 ### 获取当前服务器列表
 ```
 /cloud/list/{page}
 GET
-
 Response : 
 {
   list: [ Server ], 服务器列表
-  typeList: [ string ] 目前有的服务器型号列表
-  serverRoomList: [ string ] 目前可用的机房列表
 }
 	
 Server
@@ -129,8 +124,17 @@ Server
   os: string, 操作系统
 }
 ```
+### 获取可用型号，机房信息
+```
+/cloud/serverInfo
+GET
+Response :
+{
+  typeList: [ string ] 目前有的服务器型号列表
+  serverRoomList: [ string ] 目前可用的机房列表
+}
 
-
+```
 ### 获取历史服务器价格和预测价格
 ```
 /cloud/price
