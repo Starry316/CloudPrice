@@ -61,11 +61,12 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ expectedData, actualData,timeData } = {}) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          boundaryGap: false,
+          //type: 'category',
+          data: timeData,
+          boundaryGap: true,
           axisTick: {
             show: false
           }
@@ -87,11 +88,35 @@ export default {
         yAxis: {
           axisTick: {
             show: false
+          },
+          type: 'value',
+          axisLabel: {
+            formatter: '{value} 美元/小时'
           }
         },
         legend: {
           data: ['expected', 'actual']
         },
+
+        toolbox: {
+          show: true,
+          dataZoom: {
+            yAxisIndex: 'none'
+          },
+          showTitle:true,
+          // orient: 'vertical',
+          // //left: 'right',
+           right:'50px',
+           //top: '2px',
+          feature: {
+            mark: {show: true},
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+
         series: [{
           name: 'expected', itemStyle: {
             normal: {
@@ -102,15 +127,41 @@ export default {
               }
             }
           },
-          smooth: true,
+          smooth: false,
           type: 'line',
           data: expectedData,
           animationDuration: 2800,
-          animationEasing: 'cubicInOut'
+          animationEasing: 'cubicInOut',
+          markPoint: {
+            data: [
+              {type: 'max', name: '最大值'},
+              {type: 'min', name: '最小值'}
+            ]
+          },
+          markLine: {
+            data: [
+              {type: 'average', name: '平均值'},
+              // [{
+              //   symbol: 'none',
+              //   x: '90%',
+              //   yAxis: 'max'
+              // }, {
+              //   symbol: 'circle',
+              //   label: {
+              //     normal: {
+              //       position: 'start',
+              //       formatter: '最大值'
+              //     }
+              //   },
+              //   type: 'max',
+              //   name: '最高点'
+              // }]
+            ]
+          }
         },
         {
           name: 'actual',
-          smooth: true,
+          smooth: false,
           type: 'line',
           itemStyle: {
             normal: {
@@ -126,7 +177,33 @@ export default {
           },
           data: actualData,
           animationDuration: 2800,
-          animationEasing: 'quadraticOut'
+          animationEasing: 'quadraticOut',
+          markPoint: {
+            data: [
+              {type: 'max', name: '最大值'},
+              {type: 'min', name: '最小值'}
+            ]
+          },
+          markLine: {
+            data: [
+              {type: 'average', name: '平均值'},
+              // [{
+              //   symbol: 'none',
+              //   x: '90%',
+              //   yAxis: 'max'
+              // }, {
+              //   symbol: 'circle',
+              //   label: {
+              //     normal: {
+              //       position: 'start',
+              //       formatter: '最大值'
+              //     }
+              //   },
+              //   type: 'max',
+              //   name: '最高点'
+              // }]
+            ]
+          }
         }]
       })
     }

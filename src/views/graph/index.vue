@@ -28,33 +28,27 @@
           </el-option>
         </el-select>
 
-        <el-select v-model="chartselect" placeholder="展示形式" style="margin-top: 15px;margin-left:15px">
-          <el-option
-            v-for="item in charts"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+<!--        <el-select v-model="chartselect" placeholder="展示形式" style="margin-top: 15px;margin-left:15px">-->
+<!--          <el-option-->
+<!--            v-for="item in charts"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value">-->
+<!--          </el-option>-->
+<!--        </el-select>-->
 
         <el-button size="mini" @click="changeShow" style="margin-left: 20px">确定</el-button>
 
       </template>
 
-      <div>
-        <!--！！！！为啥还是柱状图？？？？？？？？？？？？？？？？！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
+
+
+      <div >
         <el-row v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-          <bar-chart :chart-data="barChartData"/>
-
+          <line-chart :chart-data="lineChartData"/>
         </el-row>
+
       </div>
-
-<!--      <div v-if="chart==1">-->
-<!--        <el-row v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">-->
-<!--          <line-chart :chart-data="lineChartData"/>-->
-<!--        </el-row>-->
-
-<!--      </div>-->
 
 
     </div>
@@ -105,13 +99,13 @@
 <script>
   import {mapGetters} from 'vuex'
   import {list, history} from '../../api/cloud'
-  // import LineChart from './components/LineChart'
+  import LineChart from './components/LineChart'
   import BarChart from './components/BarChart'
 
 
   export default {
     components: {
-       LineChart ,
+      LineChart ,
       BarChart
     },
     computed: {
@@ -121,14 +115,11 @@
     },
     data() {
       return {
-        // lineChartData: {
-        //   expectedData: [100, 120, 161, 134, 105, 160, 165],
-        //   actualData: [120, 82, 91, 154, 162, 140, 145]
-        // },
-        // barChartData: {
-        //   pageA: [100, 120, 161, 134, 105, 160, 165],
-        //   pageB: [120, 82, 91, 154, 162, 140, 145]
-        // },
+        lineChartData: {
+          expectedData: [100, 120, 161, 134, 105, 160, 165],
+          actualData: [120, 82, 91, 154, 162, 140, 145],
+          timeData:[1,2,3,4,5,6,7]
+        },
 
         osList: [
           {text: 'windows', value: 'windows'},
@@ -172,7 +163,7 @@
           value: '选项2',
           label: '逻辑回归'
         }], algoselect: '',
-        algos: [{
+        charts: [{
           value: '选项1',
           label: '折线图'
         }, {
@@ -197,7 +188,7 @@
           id: row.id
         }
         history(data).then(response => {
-          this.barChartData = response.data.list
+          this.tableData = response.data.list
           this.loading = false
 
         })
