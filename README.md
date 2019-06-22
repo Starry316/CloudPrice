@@ -131,17 +131,28 @@ Server
 ```
 
 
-### 获取当前服务器价格
+### 获取历史服务器价格和预测价格
 ```
 /cloud/price
 GET
 Request : 
+{
+  start_time:date
+  end_time:date
+  sever_type:string,服务器型号
+  sever_room:string,服务器机房
+  os:string,操作系统
+}
 
 Response : 
+{
+  expectedData：[double]
+  actualData：[double]
+}
 
 	
 ```
-### 预测价格
+### 预测价格（暂停用，与历史价格合并）
 ```
 /cloud/predict
 POST
