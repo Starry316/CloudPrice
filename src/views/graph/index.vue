@@ -42,7 +42,7 @@
       </template>
 
       <div>
-        <!--！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
+        <!--！！！！为啥还是柱状图？？？？？？？？？？？？？？？？！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
         <el-row v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
           <bar-chart :chart-data="barChartData"/>
 
@@ -106,12 +106,12 @@
   import {mapGetters} from 'vuex'
   import {list, history} from '../../api/cloud'
   // import LineChart from './components/LineChart'
-  import BarChart from './components/LineChart'
+  import BarChart from './components/BarChart'
 
 
   export default {
     components: {
-      // LineChart ,
+       LineChart ,
       BarChart
     },
     computed: {
@@ -125,10 +125,10 @@
         //   expectedData: [100, 120, 161, 134, 105, 160, 165],
         //   actualData: [120, 82, 91, 154, 162, 140, 145]
         // },
-        barChartData: {
-          pageA: [100, 120, 161, 134, 105, 160, 165],
-          pageB: [120, 82, 91, 154, 162, 140, 145]
-        },
+        // barChartData: {
+        //   pageA: [100, 120, 161, 134, 105, 160, 165],
+        //   pageB: [120, 82, 91, 154, 162, 140, 145]
+        // },
 
         osList: [
           {text: 'windows', value: 'windows'},

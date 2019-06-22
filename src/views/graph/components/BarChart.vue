@@ -8,95 +8,157 @@ require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 
 const animationDuration = 6000
+var posList = [
+  'left', 'right', 'top', 'bottom',
+  'inside',
+  'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+  'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+];
 
-export default {
-  mixins: [resize],
-  props: {
-    className: {
-      type: String,
-      default: 'chart'
-    },
-    width: {
-      type: String,
-      default: '100%'
-    },
-    height: {
-      type: String,
-      default: '300px'
+app.configParameters = {
+  rotate: {
+    min: -90,
+    max: 90
+  },
+  align: {
+    options: {
+      left: 'left',
+      center: 'center',
+      right: 'right'
     }
   },
-  data() {
-    return {
-      chart: null
+  verticalAlign: {
+    options: {
+      top: 'top',
+      middle: 'middle',
+      bottom: 'bottom'
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-    })
+  position: {
+    options: echarts.util.reduce(posList, function (map, pos) {
+      map[pos] = pos;
+      return map;
+    }, {})
   },
-  beforeDestroy() {
-    if (!this.chart) {
-      return
-    }
-    this.chart.dispose()
-    this.chart = null
-  },
-  methods: {
-    initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
+  distance: {
+    min: 0,
+    max: 100
+  }
+};
 
-      this.chart.setOption({
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: { // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        grid: {
-          top: 10,
-          left: '2%',
-          right: '2%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [{
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          axisTick: {
-            alignWithLabel: true
-          }
-        }],
-        yAxis: [{
-          type: 'value',
-          axisTick: {
-            show: false
-          }
-        }],
-        series: [{
-          name: 'pageA',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageB',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }]
-      })
+app.config = {
+  rotate: 90,
+  align: 'left',
+  verticalAlign: 'middle',
+  position: 'insideBottom',
+  distance: 15,
+  onChange: function () {
+    var labelOption = {
+      normal: {
+        rotate: app.config.rotate,
+        align: app.config.align,
+        verticalAlign: app.config.verticalAlign,
+        position: app.config.position,
+        distance: app.config.distance
+      }
+    };
+    myChart.setOption({
+      series: [{
+        label: labelOption
+      }, {
+        label: labelOption
+      }, {
+        label: labelOption
+      }, {
+        label: labelOption
+      }]
+    });
+  }
+};
+
+
+var labelOption = {
+  normal: {
+    show: true,
+    position: app.config.position,
+    distance: app.config.distance,
+    align: app.config.align,
+    verticalAlign: app.config.verticalAlign,
+    rotate: app.config.rotate,
+    formatter: '{c}  {name|{a}}',
+    fontSize: 16,
+    rich: {
+      name: {
+        textBorderColor: '#fff'
+      }
     }
   }
+};
+
+option = {
+  color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
+  },
+  legend: {
+    data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+  },
+  toolbox: {
+    show: true,
+    orient: 'vertical',
+    left: 'right',
+    top: 'center',
+    feature: {
+      mark: {show: true},
+      dataView: {show: true, readOnly: false},
+      magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+      restore: {show: true},
+      saveAsImage: {show: true}
+    }
+  },
+  calculable: true,
+  xAxis: [
+    {
+      type: 'category',
+      axisTick: {show: false},
+      data: ['2012', '2013', '2014', '2015', '2016']
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value'
+    }
+  ],
+  series: [
+    {
+      name: 'Forest',
+      type: 'bar',
+      barGap: 0,
+      label: labelOption,
+      data: [320, 332, 301, 334, 390]
+    },
+    {
+      name: 'Steppe',
+      type: 'bar',
+      label: labelOption,
+      data: [220, 182, 191, 234, 290]
+    },
+    {
+      name: 'Desert',
+      type: 'bar',
+      label: labelOption,
+      data: [150, 232, 201, 154, 190]
+    },
+    {
+      name: 'Wetland',
+      type: 'bar',
+      label: labelOption,
+      data: [98, 77, 101, 99, 40]
+    }
+  ]
+
 }
 </script>
