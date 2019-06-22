@@ -57,6 +57,8 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { login } from '@/api/user'
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'Login',
@@ -86,7 +88,10 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      userToken:'',
+
+
     }
   },
   watch: {
@@ -98,6 +103,8 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['changeLogin']),
+
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -125,6 +132,17 @@ export default {
           return false
         }
       })
+
+      login(this.loginForm).then(response =>{
+        _this.userToken = 'Bearer ' + response.data.data.body.token;
+        // 将用户token保存到vuex中
+        _this.changeLogin({ Authorization: _this.userToken });
+        //_this.$router.push('/home');
+        alert('登录成功');
+
+      })
+
+
     }
   }
 }
