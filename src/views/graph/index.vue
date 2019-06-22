@@ -143,28 +143,13 @@
         loading: true,
         search: '',
         showTab: 1,
-        showServer: {
-          type: 'a1-small',
-          serverRoom: 'Hong Kong',
-          os: 'windows'
-        },
+        // showServer: {
+        //   type: 'a1-small',
+        //   serverRoom: 'Hong Kong',
+        //   os: 'windows'
+        // },
 
-        options: [{
-          value: '选项1',
-          label: '一周内'
-        }, {
-          value: '选项2',
-          label: '两周内'
-        }, {
-          value: '选项3',
-          label: '一月内'
-        }, {
-          value: '选项4',
-          label: '三月内'
-        }, {
-          value: '选项5',
-          label: '一年内'
-        }], optselect: '',
+
         algos: [{
           value: '选项1',
           label: '随机森林'
@@ -179,7 +164,7 @@
           }
         },
         start_time: '',
-        end_time:""
+        end_time: ""
       }
 
 
@@ -209,6 +194,10 @@
       },
 
 
+
+
+
+
       filterHandler(value, row, column) {
         const property = column['property'];
         return row[property] === value;
@@ -217,15 +206,15 @@
       changeTab(tab) {
         this.showTab = tab
       },
-      handleCurrentChange(page){
+      handleCurrentChange(page) {
         if (!this.bufferTableData.has(page))
           this.getTablePage(page)
         else
           this.tableData = this.bufferTableData.get(page)
       },
-      getTablePage(page){
+      getTablePage(page) {
         this.loading = true
-        list({page:page}).then(response => {
+        list({page: page}).then(response => {
           this.bufferTableData.set(page, response.data.list)
           this.tableData = response.data.list
           this.loading = false
@@ -262,7 +251,8 @@
   .server-info span {
     margin: 2rem 1rem 2rem 0;
   }
-  .pagination{
+
+  .pagination {
     text-align: center;
     margin-top: 2rem;
   }
