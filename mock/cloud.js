@@ -22,7 +22,16 @@ export default [
     url: '/cloud/list',
     type: 'get',
     response: config => {
-      const list = data.list
+      const mockData = Mock.mock({
+        'list|15': [{
+          'id|+1': 0,
+          type: '@sentence(1, 10)',
+          'os|1': ['linux', 'windows'],
+          serverRoom: '@sentence(1, 10)',
+        }],
+      })
+      const list = mockData.list
+      const { page } = config.body
       return {
         code: 20000,
         data: {
@@ -41,7 +50,8 @@ export default [
       const actualData = data.actualList
       const chartData = {
         expectedData: expectedData,
-        actualData: actualData
+        actualData: actualData,
+
       }
       return {
         code: 20000,
