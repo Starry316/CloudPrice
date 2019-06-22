@@ -95,6 +95,13 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pagination">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          layout="prev, pager, next"
+          :total="50">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -209,15 +216,29 @@
 
       changeTab(tab) {
         this.showTab = tab
+      },
+      handleCurrentChange(page){
+        if (!this.bufferTableData.has(page))
+          this.getTablePage(page)
+        else
+          this.tableData = this.bufferTableData.get(page)
+      },
+      getTablePage(page){
+        this.loading = true
+        list({page:page}).then(response => {
+          this.bufferTableData.set(page, response.data.list)
+          this.tableData = response.data.list
+          this.loading = false
+        })
       }
 
     },
     mounted() {
-      list().then(response => {
-        this.tableData = response.data.list
-        this.loading = false
-      })
+      this.bufferTableData = new Map()
+      this.getTablePage(1)
     }
+
+
   }
 </script>
 
@@ -240,5 +261,9 @@
 
   .server-info span {
     margin: 2rem 1rem 2rem 0;
+  }
+  .pagination{
+    text-align: center;
+    margin-top: 2rem;
   }
 </style>
