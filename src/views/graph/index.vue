@@ -17,15 +17,17 @@
 
       <template>
 
-
+<!--只要时间选择器时间变化了，下面的图像就动态跟着变化-->
         <el-date-picker
-          v-model="start_time"
+          v-model="time1"
+          onchange="showHistory(this.showServer,0)"
           type="date"
           placeholder="开始时间">
         </el-date-picker>
 
         <el-date-picker
-          v-model="end_time"
+          v-model="time2"
+          onchange="showHistory(this.showServer,0)"
           type="date"
           placeholder="终止时间">
         </el-date-picker>
@@ -41,7 +43,7 @@
         </el-select>
 
 
-        <el-button size="mini" style="margin-left: 20px">确定</el-button>
+
 
       </template>
 
@@ -90,7 +92,7 @@
             <el-button
               size="mini"
               type="warning"
-              @click="showHistory(scope.$index, scope.row)">历史价格
+              @click="showHistory( scope.row,1)">历史价格
             </el-button>
           </template>
         </el-table-column>
@@ -144,11 +146,7 @@
         search: '',
         showTab: 1,
         totalCount:50,
-        // showServer: {
-        //   type: 'a1-small',
-        //   serverRoom: 'Hong Kong',
-        //   os: 'windows'
-        // },
+
 
 
         algos: [{
@@ -164,14 +162,15 @@
             return time.getTime() > Date.now();
           }
         },
-        start_time: '',
-        end_time: ""
+        time1: '',
+        time2: ""
       }
 
 
     },
     methods: {
-      showHistory(index, row) {
+      showHistory( row,firstIn) {
+        const date = new Date();
         this.loading = true
         this.changeTab(2)
         this.showServer = {
@@ -179,25 +178,28 @@
           serverRoom: row.serverRoom,
           os: row.os,
         }
+        //默认展示一周前到一周后。选择时间后是默认预测一周
         let data = {
-          id: row.id
+          //id: row.id
+          start_time:firstIn===1?date.getTime() - 3600 * 1000 * 24 * 7:this.time1,
+          end_time:firstIn===1?date.getTime() + 3600 * 1000 * 24 * 7:this.time2+ 3600 * 1000 * 24 * 7,
+          sever_type:row.type,
+          sever_room:row.serverRoom,
+          os:row.os
         }
         history(data).then(response => {
-          // this.tableData = response.data.list
+          this.lineChartData = response.data.list
           this.loading = false
 
         })
 
       },
+
+
       showPredict(index, row) {
 
         this.changeTab(3)
       },
-
-
-
-
-
 
       filterHandler(value, row, column) {
         const property = column['property'];

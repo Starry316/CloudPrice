@@ -152,7 +152,7 @@ Response :
 {
   expectedData：[double]
   actualData：[double]
-  timeData:[date]
+  timeData:[date]  只要月日不要年
 }
 
 	
