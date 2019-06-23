@@ -105,7 +105,6 @@ export default {
   },
   methods: {
 
-
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -116,6 +115,7 @@ export default {
         this.$refs.password.focus()
       })
     },
+
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
