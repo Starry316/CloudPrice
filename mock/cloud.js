@@ -13,6 +13,12 @@ const data = Mock.mock({
   'predictList|20':[
     '@integer(0, 20)'
   ],
+  'serverRoomList|10':[
+    '@sentence(1, 5)'
+  ],
+  'typeList|10':[
+    '@sentence(1, 5)'
+  ]
 })
 
 
@@ -60,5 +66,20 @@ export default [
         }
       }
     }
+  },
+
+  {
+    url: '/cloud/serverInfo',
+    type: 'get',
+    response: config => {
+      return {
+        code: 20000,
+        data: {
+          serverRoomList: data.serverRoomList,
+          typeList: data.typeList
+        }
+      }
+    }
   }
+
 ]

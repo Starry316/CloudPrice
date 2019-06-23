@@ -110,7 +110,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {list, history} from '../../api/cloud'
+  import {list, history, serverInfo} from '../../api/cloud'
   import LineChart from './components/LineChart'
 
 
@@ -232,7 +232,14 @@
     },
     mounted() {
       this.bufferTableData = new Map()
-
+      serverInfo().then(response=>{
+        let list = response.data.typeList
+        for (let i = 0; i < list.length; i++) {
+          this.typeList.push({text:  list[i], value:  list[i]},)
+        }
+        // this.typeList = response.data.typeList
+        // this.serveList = response.data.serveList
+      })
       this.getTablePage(1)
     }
 

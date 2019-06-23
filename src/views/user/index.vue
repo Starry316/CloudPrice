@@ -6,7 +6,7 @@
       <el-container>
         <el-aside width="20%" style="margin-right: 1rem;" >
           <el-card :body-style="{ padding: '0px' }">
-            <img :src="avatar" width="100%">
+            <img :src="avatarUrl" width="100%">
 
             <div style="padding: 14px;">
               <span style="text-align: center"><h3>{{name}}</h3></span>
@@ -131,7 +131,8 @@ export default {
       isEditing: false,
       telephone:'18340018269',
       email:'starry@123.com',
-      loading:false
+      loading:false,
+      avatarUrl:''
     }
   },
   watch: {
@@ -140,7 +141,7 @@ export default {
 
   methods: {
     init() {
-
+      this.avatarUrl = this.avatar
       //alert(this.$store.getters.name)
     },
     editProfile(){
@@ -177,17 +178,23 @@ export default {
       });
     },
     handleAvatarSuccess(res, file) {
-      this.avatar = URL.createObjectURL(file.raw);
+      this.hideLoading()
+      this.$message.success("上传成功")
+      this.avatarUrl = URL.createObjectURL(file.raw);
+      this.$store.commit('user/SET_AVATAR', this.avatarUrl)
     },
     beforeAvatarUpload(file) {
+      this.showLoading()
       const isJPG = file.type === 'image/jpeg';
       const isLt2M = file.size / 1024 / 1024 < 2;
 
-      // if (!isJPG) {
-      //   this.$message.error('上传头像图片只能是 JPG 格式!');
-      // }
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.hideLoading()
+      }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.hideLoading()
       }
       return isJPG && isLt2M;
     }
