@@ -57,26 +57,25 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import { login } from '@/api/user'
-import { mapMutations } from 'vuex'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请输入正确的用户名！'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码不可少于六位数字！'))
       } else {
         callback()
       }
     }
+
     return {
       loginForm: {
         username: '',
@@ -96,14 +95,16 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function(route) {//监听路由变化，路由变化也就是登录成功了
+        //自动跳转指定页面，query是查询参数  查询参数中的redirect
+        //跳转的时候在页面之间传参
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
   methods: {
-    ...mapMutations(['changeLogin']),
+
 
     showPwd() {
       if (this.passwordType === 'password') {
@@ -122,7 +123,7 @@ export default {
 
           this.$store.dispatch('user/login', this.loginForm).then(() => {
 
-            this.$router.push({ path: this.redirect || '/' })
+            this.$router.push({ path: this.redirect || '/' })   //只要返回数据了，就是登录成功了，路由就会变化，上面的watch会监听到，就会跳转。
             this.loading = false
           }).catch(() => {
             this.loading = false
@@ -132,16 +133,6 @@ export default {
           return false
         }
       })
-
-      login(this.loginForm).then(response =>{
-        _this.userToken = 'Bearer ' + response.data.data.body.token;
-        // 将用户token保存到vuex中
-        _this.changeLogin({ Authorization: _this.userToken });
-        //_this.$router.push('/home');
-        alert('登录成功');
-
-      })
-
 
     }
   }
