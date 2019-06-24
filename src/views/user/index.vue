@@ -1,10 +1,8 @@
 <template>
 
-  <div class="user-container" v-loading="loading">
-
-    <el-container >
-      <el-container>
-        <el-aside width="20%" style="margin-right: 1rem;" >
+  <el-container  class="user-container" v-loading="loading">
+      <el-row :gutter="20" style="width: 100%">
+        <el-col  :xs="24" :sm="24" :md="8" :lg="6" :xl="6" style="margin-bottom: 16px;" >
           <el-card :body-style="{ padding: '0px' }">
             <img :src="avatarUrl" width="100%">
 
@@ -54,15 +52,12 @@
                     <!--<el-button type="text" class="button">操作按钮</el-button>-->
                   </el-col>
                 </el-row>
-
-
               </div>
             </div>
           </el-card>
-        </el-aside>
-        <el-container style="background-color: white">
-          <el-main>
-            <!--个人介绍-->
+        </el-col>
+        <el-col  :xs="24" :sm="24" :md="16" :lg="18" :xl="18" style="background-color: white;padding:16px">
+
             <h3>个人信息</h3>
             <span v-if="!isEditing">{{introduction}}</span>
             <!--个人介绍修改框-->
@@ -107,13 +102,10 @@
                 Save
             </el-button>
 
-          </el-main>
 
-        </el-container>
-      </el-container>
-    </el-container>
-
-  </div>
+        </el-col>
+      </el-row>
+  </el-container>
 </template>
 
 <script>
