@@ -52,7 +52,8 @@ module.exports = {
     name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
+        '@': resolve('src'),
+        'vendor': path.resolve(__dirname, '../src/vendor') //指定vendor路径
       }
     }
   },
