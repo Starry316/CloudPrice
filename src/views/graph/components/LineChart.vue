@@ -6,6 +6,7 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
+import {export_json_to_excel} from "../../../vendor/Export2Excel";
 
 export default {
   mixins: [resize],
@@ -61,6 +62,11 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
+
+    formatJson (filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
+
     setOptions({ expectedData, actualData,timeData } = {}) {
       this.chart.setOption({
         xAxis: {
@@ -114,7 +120,21 @@ export default {
             magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
             restore: {show: true},
             saveAsImage: {show: true},
-            myDownload:{}
+            myDownload:{
+              show:true,
+              title:'下载excel',
+              icon:'image://http://echarts.baidu.com/images/favicon.png',
+
+              onclick:function () {
+                let tHeader = ['id', '姓名', '年龄'] // excel的表头标题
+                let filterVal = ['id', 'name', 'age'] // 需要导出对应自己列表中的每项数据
+                let list = this.table // 列表数据
+                let data = this.formatJson(filterVal, list)
+                export_json_to_excel(tHeader, data, 'excelname')
+
+              }
+
+            }
           }
         },
 
