@@ -15,3 +15,10 @@ export function history(data) {
     params: { data }
   })
 }
+export function serverInfo() {
+  return request({
+    url: 'cloud/serverInfo',
+    method: 'get'
+
+  })
+}
