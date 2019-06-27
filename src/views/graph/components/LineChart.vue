@@ -113,7 +113,8 @@ export default {
             dataView: {show: true, readOnly: false},
             magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
             restore: {show: true},
-            saveAsImage: {show: true}
+            saveAsImage: {show: true},
+            myDownload:{}
           }
         },
 
@@ -141,21 +142,7 @@ export default {
           markLine: {
             data: [
               {type: 'average', name: '平均值'},
-              // [{
-              //   symbol: 'none',
-              //   x: '90%',
-              //   yAxis: 'max'
-              // }, {
-              //   symbol: 'circle',
-              //   label: {
-              //     normal: {
-              //       position: 'start',
-              //       formatter: '最大值'
-              //     }
-              //   },
-              //   type: 'max',
-              //   name: '最高点'
-              // }]
+
             ]
           }
         },
@@ -187,21 +174,7 @@ export default {
           markLine: {
             data: [
               {type: 'average', name: '平均值'},
-              // [{
-              //   symbol: 'none',
-              //   x: '90%',
-              //   yAxis: 'max'
-              // }, {
-              //   symbol: 'circle',
-              //   label: {
-              //     normal: {
-              //       position: 'start',
-              //       formatter: '最大值'
-              //     }
-              //   },
-              //   type: 'max',
-              //   name: '最高点'
-              // }]
+
             ]
           }
         }]
