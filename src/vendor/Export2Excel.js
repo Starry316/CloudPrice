@@ -1,6 +1,6 @@
 /* eslint-disable */
 require('script-loader!file-saver');
-require('script-loader!vendor/Blob');  //？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+require('cript-loader!Blob.jsnpm install -S xlsx');  //？？？？？？？？？？？？？？？？？？？？？？？？？？？？
 require('script-loader!xlsx/dist/xlsx.core.min');
 function generateArray(table) {
     var out = [];
