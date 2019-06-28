@@ -5,12 +5,8 @@
 <script>
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-require('script-loader!xlsx/dist/xlsx.full.min');
-//import {imExPortPlugin} from '../../../uitls/imex_port'
 import resize from './mixins/resize'
-import {exportObj} from '@/utils/imex_port'
-// src="../../utils/imex_port.js"
-//import {export_json_to_excel} from "../../../vendor/Export2Excel";
+import {export_json_to_excel} from "../../../vendor/Export2Excel";
 
 export default {
   mixins: [resize],
@@ -38,7 +34,20 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      table: [{
+        id: 1,
+        name: '测试1',
+        age: 21
+      }, {
+        id: 2,
+        name: '测试2',
+        age: 22
+      }, {
+        id: 3,
+        name: '测试3',
+        age: 23
+      }],
     }
   },
   watch: {
@@ -129,54 +138,15 @@ export default {
               title:'下载excel',
               icon:'image://http://echarts.baidu.com/images/favicon.png',
               onclick: ()=> {
-                alert('点击了！')
 
-                var _this = this;
-                exportObj({
-                  "data":[
-                    {"id":1,"time":"2018-08-01"},
-                    {"id":2,"time":"2018-08-02"},
-                    {"id":3,"time":"2018-08-03"},
-                    {"id":4,"time":"2018-08-04"},
-                    {"id":5,"time":"2018-08-05"}
-                  ],
-                  "format":[
-                    {"old":"id","new":"序号"},
-                    {"old":"time","new":"时间"},
-                  ],
-                  "dom":_this,
-                  "filename":"测试文件.xlsx",
-                  "success":function (res) {
-                    console.log("导出成功")
-                  }
-                })
-              // onclick:function () {
-              //   alert('点击了！')
-              //   var _this = this;
-              //   imExPortPlugin.export({
-              //     "data":[
-              //       {"id":1,"time":"2018-08-01"},
-              //       {"id":2,"time":"2018-08-02"},
-              //       {"id":3,"time":"2018-08-03"},
-              //       {"id":4,"time":"2018-08-04"},
-              //       {"id":5,"time":"2018-08-05"}
-              //     ],
-              //     "format":[
-              //       {"old":"id","new":"序号"},
-              //       {"old":"time","new":"时间"},
-              //     ],
-              //     "dom":_this,
-              //     "filename":"测试文件.xlsx",
-              //     "success":function () {
-              //       console.log("导出成功")
-              //     }
-              //   })
 
-                // let tHeader = ['id', '姓名', '年龄'] // excel的表头标题
-                // let filterVal = ['id', 'name', 'age'] // 需要导出对应自己列表中的每项数据
-                // let list = this.table // 列表数据
-                // let data = this.formatJson(filterVal, list)
-                // export_json_to_excel(tHeader, data, 'excelname')
+
+
+                let tHeader = ['id', '姓名', '年龄'] // excel的表头标题
+                let filterVal = ['id', 'name', 'age'] // 需要导出对应自己列表中的每项数据
+                let list = this.table // 列表数据
+                let data = this.formatJson(filterVal, list)
+                export_json_to_excel(tHeader, data, 'excelname')
 
               }
 
