@@ -2,9 +2,10 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/user/login',
+
+    url: '/api/account/login',
     method: 'post',
-    params:{ data }
+    data: JSON.stringify(data)
   })
 }
 
