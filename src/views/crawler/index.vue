@@ -116,7 +116,7 @@ export default {
     },
     dosomething(){
       this.loading = true
-     
+
       setTimeout(e =>{
         this.loading = false
       },1000)

@@ -158,3 +158,24 @@ var imExPortPlugin = {
     })
   }
 }
+
+
+export function importObj(obj) {
+  importfun(obj.dom,function (res) {
+    // console.log(res)
+    formatfun(res,obj,function (data) {
+      obj.success(data);// 返回最终结果
+    })
+  })
+}
+export function exportObj(obj) {
+  var jsono = obj.data;// 需要导出的数据
+  formatfun(jsono,obj,function (res) {
+    // 转化格式成功
+    // res为转化格式后的数组
+    downloadExl(obj,res,function () {
+      // 下载成功
+      obj.success(res)
+    })
+  })
+}
