@@ -5,8 +5,11 @@
 <script>
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
+require('script-loader!xlsx/dist/xlsx.full.min');
+//import {imExPortPlugin} from '../../../uitls/imex_port'
 import resize from './mixins/resize'
-import {export_json_to_excel} from "../../../vendor/Export2Excel";
+src="../../utils/imex_port.js"
+//import {export_json_to_excel} from "../../../vendor/Export2Excel";
 
 export default {
   mixins: [resize],
@@ -126,11 +129,32 @@ export default {
               icon:'image://http://echarts.baidu.com/images/favicon.png',
 
               onclick:function () {
-                let tHeader = ['id', '姓名', '年龄'] // excel的表头标题
-                let filterVal = ['id', 'name', 'age'] // 需要导出对应自己列表中的每项数据
-                let list = this.table // 列表数据
-                let data = this.formatJson(filterVal, list)
-                export_json_to_excel(tHeader, data, 'excelname')
+                alert('点击了！')
+                var _this = this;
+                imExPortPlugin.export({
+                  "data":[
+                    {"id":1,"time":"2018-08-01"},
+                    {"id":2,"time":"2018-08-02"},
+                    {"id":3,"time":"2018-08-03"},
+                    {"id":4,"time":"2018-08-04"},
+                    {"id":5,"time":"2018-08-05"}
+                  ],
+                  "format":[
+                    {"old":"id","new":"序号"},
+                    {"old":"time","new":"时间"},
+                  ],
+                  "dom":_this,
+                  "filename":"测试文件.xlsx",
+                  "success":function () {
+                    console.log("导出成功")
+                  }
+                })
+
+                // let tHeader = ['id', '姓名', '年龄'] // excel的表头标题
+                // let filterVal = ['id', 'name', 'age'] // 需要导出对应自己列表中的每项数据
+                // let list = this.table // 列表数据
+                // let data = this.formatJson(filterVal, list)
+                // export_json_to_excel(tHeader, data, 'excelname')
 
               }
 
