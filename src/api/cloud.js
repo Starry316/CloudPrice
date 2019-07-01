@@ -1,8 +1,8 @@
 import request from '@/utils/request'
-
+const baseurl = '/api/cloud'
 export function list(page) {
   return request({
-    url: '/cloud/list',
+    url: baseurl+'/list/'+page,
     method: 'get',
   })
 }
@@ -17,7 +17,7 @@ export function history(data) {
 }
 export function serverInfo() {
   return request({
-    url: 'cloud/serverInfo',
+    url: baseurl+'/serverInfo',
     method: 'get'
 
   })

@@ -21,27 +21,25 @@ https://nodejs.org/en/download/
 3. 项目结构看上去很复杂但实际上需要看一看的就是views，api和router目录下的内容
 4. 有不懂的问我就可以
 
-# 接口
-## 用户信息接口
+# 接口 /api
+## 用户信息接口 /account
+
 ### 注册
 ```
-/user/signup
+/register
 POST
 Request: 
 {
-	username : string,
-	password : string,
-	introduction : string 个人介绍
-	avatar : string 头像url
+    email:      String 非空
+    username:   String 以英文字母或汉字开头（其余可以是英文、汉字、数字），一个汉字算2个字符，长度共 4-16  
+    password:   String 长度 8-16，必须同时包含数字、字母
+    code:       String 非空
 }
-Response : 
-{
-	token : "userToken"	
-}
+
 ```
 ### 登录
 ```
-/user/login
+/login
 POST
 Request: 
 {
@@ -50,66 +48,55 @@ Request:
 }
 Response : 
 {
-	token : "userToken"	
+    除 password 外，所有数据库中属性的键值对 
 }
+
 ```
 ### 注销
 ```
-/user/logout
+/logout
 POST
 Response : 
 
 ```
-### 获取用户信息
-先登录获取token 再用token获取用户信息
+### 获取用户身份
+
 ```
-/user/info
+/role
 GET
-Request : 
-{
-	token: string
-}
+
 Response : 
 {
 	role: 用户身份
-	introduction : string 个人介绍
-	avatar : string 头像url
-	name : string 用户名
 }
 
 ```
+
 ### 修改密码
 ```
-/user/modifyPassword
+/modifyPassword
 POST
 Request: 
 {
 	originPassword : string,
 	newPassword : string
 }
-Response : 
-{
-	token : "userToken"	
-}
+
 ```
 ### 修改个人信息
 ```
-/user/modifyProfile
+/modifyProfile
 POST
 Request: 
 {
 	introduction : string,
-	//todo 其他数据
-}
-Response : 
-{
-	token : "userToken"	
+	phone : string
 }
 ```
-## 云服务模块接口
+## 云服务模块接口 /cloud
 ### 获取当前服务器列表
 ```
-/cloud/list/{page}
+/list/{page}
 GET
 Response : 
 {
@@ -119,14 +106,14 @@ Response :
 Server
 {
   id: int, 
-  serverRoom: string, 机房位置
+  location: string, 机房位置
   type: string,  型号
   os: string, 操作系统
 }
 ```
 ### 获取可用型号，机房信息
 ```
-/cloud/serverInfo
+/serverInfo
 GET
 Response :
 {
@@ -135,9 +122,9 @@ Response :
 }
 
 ```
-### 获取历史服务器价格和预测价格
+### 待定 获取历史服务器价格和预测价格 
 ```
-/cloud/price
+/price
 GET
 Request : 
 {
@@ -166,7 +153,7 @@ Request:
 Response:
 
 ```
-## 管理员用户管理模块接口
+## 待定 管理员用户管理模块接口
 ### 获取用户列表
 需要管理员权限
 ```

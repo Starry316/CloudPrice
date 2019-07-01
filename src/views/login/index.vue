@@ -73,7 +73,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import { login } from '@/api/user'
-import axios from 'axios'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 export default {
   name: 'Login',
   data() {
@@ -133,27 +133,11 @@ export default {
     },
 
     handleLogin() {
-      // axios({
-      //   method: 'post',
-      //   url: '/back/api/account/login',
-      //   data: {
-      //     username: 'Fred',
-      //     password: 'Flintstone'
-      //   }
-      // });
-      // login(this.loginForm).then(response=>{
-      //     console.log(response.headers)
-      //
-      //
-      // })
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-
-            this.$router.push({ path: this.redirect || '/' })   //只要返回数据了，就是登录成功了，路由就会变化，上面的watch会监听到，就会跳转。
-
+            this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
             this.loading = false

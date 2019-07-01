@@ -1,51 +1,50 @@
 import request from '@/utils/request'
 
+const baseurl = "/api/account"
 export function login(data) {
   return request({
-
-    url: '/api/account/login',
+    url: baseurl+'/login',
     method: 'post',
-    data: JSON.stringify(data)
+    data: data
   })
 }
 
 export function register(data) {
   return request({
-    url: '/user/signup',
+    url: baseurl+'/register',
     method: 'post',
-    data
+    data: data
   })
 }
 
 
 
-export function getInfo(token) {
+export function getRole() {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: baseurl+'/role',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: baseurl+'/logout',
     method: 'post'
   })
 }
 
 export function modifyProfile(data) {
   return request({
-    url: '/user/modifyProfile',
+    url: baseurl+'/modifyProfile',
     method: 'post',
-    params:{ data }
+    data: data
   })
 }
 
 export function modifyPassword(data) {
   return request({
-    url: '/user/modifyPassword',
+    url: baseurl+'/modifyPassword',
     method: 'post',
-    params:{ data }
+    data: data
   })
 }

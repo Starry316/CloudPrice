@@ -11,6 +11,9 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 const port = 9529 // dev port
+// 后端域名和端口，用于代理转发
+const backHost = 'http://localhost'
+const backPort = '8081'
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -27,25 +30,39 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
-    port: port,
-    open: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
+    port:port,
+    open:true,
+    // 加入代理，处理跨域问题
     proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
+      // 所有/back/*的请求都会被代理为 backHost:backPort/*
+      '/back': {
+        // changeOrigin: true,
+        target: backHost+':'+backPort,
+        pathRewrite: {'^/back' : ''}
       }
-    },
-    after: require('./mock/mock-server.js')
+    }
   },
+  // Mock数据代理
+  // devServer: {
+  //   port: port,
+  //   open: true,
+  //   overlay: {
+  //     warnings: false,
+  //     errors: true
+  //   },
+  //   proxy: {
+  //     // change xxx-api/login => mock/login
+  //     // detail: https://cli.vuejs.org/config/#devserver-proxy
+  //     [process.env.VUE_APP_BASE_API]: {
+  //       target: `http://127.0.0.1:${port}/mock`,
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         ['^' + process.env.VUE_APP_BASE_API]: ''
+  //       }
+  //     }
+  //   },
+  //   after: require('./mock/mock-server.js')
+  // },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.

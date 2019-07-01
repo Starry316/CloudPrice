@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getRole } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { hex_sha1 } from '@/utils/sha1.js'
@@ -29,13 +29,15 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-
-
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+      login({ username: username.trim(), password: password })
+        .then(response => {
+          const { data } = response
+          const { username, avatar, } = data
+          setToken(username)
+          commit('SET_TOKEN', username)
+          commit('SET_NAME', username)
+          // commit('SET_AVATAR', avatar)
+          resolve()
       }).catch(error => {
         reject(error)
       })
@@ -47,7 +49,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       register({ username: username.trim(), password: hex_sha1(password)  ,introduction:null,avatar:null}).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
+        commit('SET_TOKEN', getToken())
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -56,20 +58,14 @@ const actions = {
     })
   },
 
-  // get user info
-  getInfo({ commit, state }) {
+  getRole({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getRole().then(response =>{
         const { data } = response
-
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
-        const { name, avatar, role } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        const { role } = data
         commit('SET_ROLE', role)
         resolve(data)
       }).catch(error => {
@@ -91,6 +87,7 @@ const actions = {
       })
     })
   },
+
 
   // remove token
   resetToken({ commit }) {
