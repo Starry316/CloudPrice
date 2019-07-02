@@ -118,7 +118,7 @@ GET
 Response :
 {
   typeList: [ string ] 目前有的服务器型号列表
-  serverRoomList: [ string ] 目前可用的机房列表
+  locationList: [ string ] 目前可用的机房列表
 }
 
 ```
