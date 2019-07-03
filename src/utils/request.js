@@ -48,6 +48,8 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
+
+
     // if the custom code is not 20000, it is judged as an error.
     if (res.status !== 200) {
       Message({
@@ -55,33 +57,34 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-
-      if (res.status === 401){
-        MessageBox.confirm('您的登录信息似乎失效了，即将跳转到登录页面', 'Confirm logout', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-
-
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
   error => {
+    let status =JSON.parse(JSON.stringify(error)).response.status
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    if (status === 403){
+      MessageBox.confirm('您的登录信息似乎失效了，即将跳转到登录页面', 'Confirm logout', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+      })
+    }
+    else {
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      return Promise.reject(error)
+    }
+
   }
 )
 

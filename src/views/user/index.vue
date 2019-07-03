@@ -153,8 +153,8 @@ export default {
       this.isEditing = false;
       let data = {
         introduction: this.introduction,
-        telephone: this.telephone,
-        email:this.email
+        phone: this.telephone,
+        // email:this.email
       }
       modifyProfile(data).then(respone =>{
         let data = respone.data
@@ -167,6 +167,8 @@ export default {
           message: '修改成功！',
           type: 'success'
         });
+      }).catch(e =>{
+        this.hideLoading();
       });
     },
     handleAvatarSuccess(res, file) {

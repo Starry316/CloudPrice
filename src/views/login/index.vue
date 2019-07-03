@@ -72,7 +72,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import { login } from '@/api/user'
+import { login } from '@/api/account'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 export default {
   name: 'Login',

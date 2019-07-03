@@ -67,8 +67,10 @@
         style="width: 100%">
 
         <el-table-column
+          :filters="locationList"
+          :filter-method="filterHandler"
           label="机房"
-          prop="serverRoom">
+          prop="location">
         </el-table-column>
 
         <el-table-column
@@ -110,7 +112,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {list, history, serverInfo} from '../../api/cloud'
+  import {list, history, serverInfo, serverCount} from '../../api/cloud'
   import LineChart from './components/LineChart'
 
 
@@ -133,13 +135,13 @@
         },
 
         osList: [
-          {text: 'windows', value: 'windows'},
-          {text: 'linux', value: 'linux'}
+          {text: 'Windows', value: 'Windows'},
+          {text: 'SUSE Linux', value: 'SUSE Linux'},
+          {text: 'Linux/UNIX', value: 'Linux/UNIX'}
         ],
         typeList: [
-          {text: 't1.micro', value: 't1.micro'},
-          {text: 'a1.medium', value: 'a1.medium'}
         ],
+        locationList: [],
 
         tableData: [],
         loading: true,
@@ -221,25 +223,44 @@
       },
       getTablePage(page) {
         this.loading = true
-        list({page: page}).then(response => {
-          this.bufferTableData.set(page, response.data.list)
-          this.tableData = response.data.list
+        list(page).then(response => {
+          this.bufferTableData.set(page, response.data)
+          this.tableData = response.data
           this.loading = false
         })
+      },
+
+      /**
+       * 获取筛选栏的数据
+       */
+      getServerInfo(){
+        serverInfo().then(response=>{
+          let respTypeList = response.data.typeList
+          let respLocationList = response.data.locationList
+          console.log(respLocationList)
+          for (let i = 0; i < respTypeList.length; i++) {
+            this.typeList.push({text: respTypeList [i], value: respTypeList[i] })
+          }
+          for (let i = 0; i < respLocationList.length; i++) {
+            this.locationList.push({text: respLocationList [i], value: respLocationList[i] })
+          }
+        })
+      },
+      /**
+       * 获取列表总计数，用于分页
+       */
+      getServerCount(){
+        serverCount().then(response=>{
+          let count = response.data.count
+          this.totalCount = count
+        })
       }
-      //TODO total count
 
     },
     mounted() {
       this.bufferTableData = new Map()
-      serverInfo().then(response=>{
-        let list = response.data.typeList
-        for (let i = 0; i < list.length; i++) {
-          this.typeList.push({text:  list[i], value:  list[i]},)
-        }
-        // this.typeList = response.data.typeList
-        // this.serveList = response.data.serveList
-      })
+      this.getServerInfo()
+      this.getServerCount()
       this.getTablePage(1)
     }
 

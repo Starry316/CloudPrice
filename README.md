@@ -21,7 +21,9 @@ https://nodejs.org/en/download/
 3. 项目结构看上去很复杂但实际上需要看一看的就是views，api和router目录下的内容
 4. 有不懂的问我就可以
 
-# 接口 /api
+
+# 接口 /api 接口不在这里更新了，见后端接口文档
+***
 ## 用户信息接口 /account
 
 ### 注册

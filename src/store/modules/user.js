@@ -1,11 +1,12 @@
-import { login, logout, getRole } from '@/api/user'
+import { login, logout } from '@/api/account'
+import {  getRole } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { hex_sha1 } from '@/utils/sha1.js'
 const state = {
   token: getToken(),
   name: '',
-  avatar: '',
+  avatar: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3434964180,3432166125&fm=85&app=63&f=JPEG?w=121&h=75&s=2CC0985EC2A2C7FD0EBDFABE0300501D',
   role:''
 }
 
