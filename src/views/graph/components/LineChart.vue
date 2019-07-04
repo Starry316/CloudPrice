@@ -139,9 +139,6 @@ export default {
               icon:'image://http://echarts.baidu.com/images/favicon.png',
               onclick: ()=> {
 
-
-
-
                 let tHeader = ['id', '姓名', '年龄'] // excel的表头标题
                 let filterVal = ['id', 'name', 'age'] // 需要导出对应自己列表中的每项数据
                 let list = this.table // 列表数据

@@ -64,7 +64,8 @@
             </el-form-item>
 
             <!--验证码图片-->
-            <div class="code-container">
+            <div @click="refreshLoginCode" class="code-container">
+              <!--<img :src="loginCodeUrl"/>-->
               <img :src="loginCodeUrl"/>
             </div>
 
@@ -206,7 +207,7 @@ export default {
     }
     const validateLoginCode = (rule, value, callback) => {
       // let reg = new RegExp("*@*\.");
-      if (value.length != 4) {
+      if (value.length != 5) {
         callback(new Error('验证码格式不正确！'))
       } else {
         callback()
@@ -214,7 +215,7 @@ export default {
     }
     const validateEmailCode = (rule, value, callback) => {
       // let reg = new RegExp("*@*\.");
-      if (value.length != 4) {
+      if (value.length != 6) {
         callback(new Error('验证码格式不正确！'))
       } else {
         callback()
@@ -252,8 +253,9 @@ export default {
       emailBtnText:'发送验证码',
       resetEmailCount:0,
       emailBtnWaiting:false,
-
-      loginCodeUrl:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1562152091902&di=0107a94a7fc216c76c4a961f21b98f5b&imgtype=0&src=http%3A%2F%2Fwww.xiaobaixitong.com%2Fd%2Ffile%2Fhelp%2F2018-08-06%2Ff15ce5d652d8da38e9e0e384f35b39d7.png"
+      code:'',
+      loginCodeBaseUrl:"http://119.29.52.224:8081/api/account/login/code",
+      loginCodeUrl:"http://119.29.52.224:8081/api/account/login/code"
 
     }
   },
@@ -268,6 +270,9 @@ export default {
     }
   },
   methods: {
+    refreshLoginCode(){
+      this.loginCodeUrl = this.loginCodeBaseUrl + "?" + Math.random()
+    },
     getEmailCode(){
       if (this.signupForm.email.trim().length == 0 ){
         Message.error("请填写正确的邮箱地址！")
@@ -275,7 +280,8 @@ export default {
       }
       this.resetEmailCount = 0
       this.emailBtnWaiting =true
-      registerMail(this.signupForm.email).then(response=>{
+
+      registerMail({email:this.signupForm.email}).then(response=>{
         Message.success("邮件已发送，请进入邮箱查收")
         this.setEmailCountDownTimer()
       }).catch(e=>{
@@ -333,13 +339,18 @@ export default {
     },
 
     handleRegister() {
-      this.$refs.registerForm.validate(valid => {
+      this.$refs.signupForm.validate(valid => {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/register', this.signupForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+            Message.success("注册成功！")
+            this.loginForm.username = this.signupForm.name
+            this.toLogin()
+            // this.$router.push({ path: this.redirect || '/' })
+            // this.loading = false
           }).catch(() => {
+            Message.error("注册失败！请稍后重试")
+            this.toLogin()
             this.loading = false
           })
 
@@ -353,14 +364,13 @@ export default {
     getLoginCode(){
 
       loginCode().then(response =>{
-        this.code = response.data
+        this.loginCodeUrl = response.data
       })
     }
 
   },
   mounted(){
-    // 登录验证码
-    this.getLoginCode()
+
   }
 }
 </script>
@@ -411,7 +421,8 @@ $cursor: black;
   }
 
   .code-container img{
-    height: 48px;
+    width: 90px;
+    height: 34px;
     /*width: 24px;*/
 
   }

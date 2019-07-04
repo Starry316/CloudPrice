@@ -48,7 +48,7 @@ export function registerMail(data) {
  */
 export function register(data) {
   return request({
-    url: baseurl+'/register/code',
+    url: baseurl+'/register',
     method: 'post',
     data:data
   })
