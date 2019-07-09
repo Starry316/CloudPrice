@@ -7,6 +7,7 @@ import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 
+
 export default {
   mixins: [resize],
   props: {
@@ -27,23 +28,35 @@ export default {
       default: true
     },
     chartData: {
+      type: Array,
+      required: true
+    },
+    tableShowLabel:{
       type: Object,
       required: true
     }
+    // actualData :  {
+    //   type: Array,
+    //   required: true
+    // },
+    // expectedData: {
+    //   type: Array,
+    //   required: true
+    // },
   },
   data() {
     return {
-      chart: null
+      chart: null,
     }
   },
-  watch: {
-    chartData: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val)
-      }
-    }
-  },
+  // watch: {
+  //   chartData: {
+  //     deep: true,
+  //     handler(val) {
+  //       this.setOptions(val)
+  //     }
+  //   }
+  // },
   mounted() {
     this.$nextTick(() => {
       this.initChart()
@@ -59,16 +72,21 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-      this.setOptions(this.chartData)
+      this.setOptions()
     },
-    setOptions({ expectedData, actualData } = {}) {
+
+    formatJson (filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
+
+    setOptions() {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          boundaryGap: false,
+          boundaryGap: true,
           axisTick: {
             show: false
-          }
+          },
+          type:'time'
         },
         grid: {
           left: 10,
@@ -87,48 +105,47 @@ export default {
         yAxis: {
           axisTick: {
             show: false
+          },
+          type: 'value',
+          axisLabel: {
+            formatter: this.tableShowLabel.fmt
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['数据']
         },
-        series: [{
-          name: 'expected', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
+
+        toolbox: {
+          show: true,
+          dataZoom: {
+            yAxisIndex: 'none'
           },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
+          showTitle:true,
+           right:'50px',
+          feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            },
+
         },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
+
+        series: [
+          {
+            name: this.tableShowLabel.name,
+            smooth: true,
+            type: 'line',
+            // data: expectedData,
+            data: this.chartData,
+            animationDuration: 2800,
+            animationEasing: 'cubicInOut',
           },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
-      })
+        ]
+      },true)
+    }
+  },
+  watch:{
+    chartData(val){
+      this.initChart()
     }
   }
 }

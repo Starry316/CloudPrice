@@ -7,7 +7,9 @@ const state = {
   token: getToken(),
   name: '',
   avatar: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3434964180,3432166125&fm=85&app=63&f=JPEG?w=121&h=75&s=2CC0985EC2A2C7FD0EBDFABE0300501D',
-  role:''
+  role:'',
+  email:'',
+  introduction:''
 }
 
 const mutations = {
@@ -22,6 +24,12 @@ const mutations = {
   },
   SET_ROLE: (state, role) => {
     state.role = role
+  },
+  SET_EMAIL: (state, email) => {
+    state.email = email
+  },
+  SET_INTRODUCTION: (state, introduction) => {
+    state.introduction = introduction
   }
 }
 
@@ -33,11 +41,13 @@ const actions = {
       login({ username: username.trim(), password: password,code:code })
         .then(response => {
           const { data } = response
-          const { username, avatar, } = data
+          const { username, avatar,email,introduction } = data
           setToken(username)
           commit('SET_TOKEN', username)
           commit('SET_NAME', username)
-          // commit('SET_AVATAR', avatar)
+          commit('SET_EMAIL', email)
+          commit('SET_INTRODUCTION', introduction)
+          commit('SET_AVATAR', avatar)
           resolve()
       }).catch(error => {
         reject(error)

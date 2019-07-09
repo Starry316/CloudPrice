@@ -14,9 +14,10 @@
 
                   <el-col :span="8" :offset="16">
                     <el-upload
-                      action="https://jsonplaceholder.typicode.com/posts/"
+                      action="/back/api/user/avatar/upload/"
                       :show-file-list="false"
                       :on-success="handleAvatarSuccess"
+                      multiple
                       :before-upload="beforeAvatarUpload"
                       style="display: inline">
                       <el-popover
@@ -110,7 +111,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { modifyProfile} from "../../api/user";
+import { modifyProfile, getInfo} from "../../api/user";
 import ThemePicker from '@/components/ThemePicker'
 
 
@@ -121,10 +122,12 @@ export default {
       introduction:'用户个人介绍',
       // 使用isEditing 标识页面编辑状态
       isEditing: false,
-      telephone:'18340018269',
+      telephone:'暂无',
       email:'starry@123.com',
       loading:false,
-      avatarUrl:''
+      avatarUrl:'',
+      uploadAvatarUrl:'https://jsonplaceholder.typicode.com/posts/'
+      // uploadAvatarUrl:'http://localhost:8081/api/user/avatar/upload/'
     }
   },
   watch: {
@@ -133,7 +136,10 @@ export default {
 
   methods: {
     init() {
-      this.avatarUrl = this.avatar
+      this.avatarUrl = this.store.getters.avatar
+      this.email = this.$store.getters.email
+      this.introduction = this.$store.getters.introduction
+
       //alert(this.$store.getters.name)
     },
     editProfile(){
@@ -172,9 +178,11 @@ export default {
       });
     },
     handleAvatarSuccess(res, file) {
+      console.log(res.data)
       this.hideLoading()
       this.$message.success("上传成功")
-      this.avatarUrl = URL.createObjectURL(file.raw);
+      this.avatarUrl = "/back/file/"+res.data
+
       this.$store.commit('user/SET_AVATAR', this.avatarUrl)
     },
     beforeAvatarUpload(file) {
@@ -191,12 +199,14 @@ export default {
         this.hideLoading()
       }
       return isJPG && isLt2M;
-    }
+    },
+
   },
   computed: {
     ...mapGetters([
       'avatar',
-      'name'
+      'name',
+      'email'
     ])
   },
 

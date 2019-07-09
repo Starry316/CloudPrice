@@ -33,3 +33,12 @@ export function serverInfo() {
 
   })
 }
+
+export function serverPrice(data) {
+  return request({
+    url: baseurl+'/price',
+    method: 'post',
+    // params:{data}
+    data: data
+  })
+}

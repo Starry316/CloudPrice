@@ -1,4 +1,4 @@
-<template xmlns:font-family="http://www.w3.org/1999/xhtml">
+<template>
 
   <div class="dashboard-container">
     <div v-if="showTab==2">
@@ -11,28 +11,31 @@
 
       <div class="server-info">
         <span style="color:#696969;font-family: Georgia">服务器： {{showServer.type}}</span>
-        <span style="color:#696969;font-family: Georgia">机房： {{showServer.serverRoom}}</span>
+        <span style="color:#696969;font-family: Georgia">机房： {{showServer.location}}</span>
         <span style="color:#696969;font-family: Georgia">系统： {{showServer.os}}</span>
       </div>
 
       <template>
 
 <!--只要时间选择器时间变化了，下面的图像就动态跟着变化-->
+        <span>查询时间</span>
         <el-date-picker
-          v-model="time1"
-          onchange="showHistory(this.showServer,0)"
+          v-model="startTime"
           type="date"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
           placeholder="开始时间">
         </el-date-picker>
 
         <el-date-picker
-          v-model="time2"
-          onchange="showHistory(this.showServer,0)"
+          v-model="endTime"
           type="date"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
           placeholder="终止时间">
         </el-date-picker>
-
-
+        <el-button @click="getPrice(showServer.id,startTime,endTime)">查询</el-button>
+        <span>预测算法</span>
         <el-select v-model="algoselect" placeholder="预测算法" style="margin-top: 15px;margin-left:15px">
           <el-option
             v-for="item in algos"
@@ -42,15 +45,13 @@
           </el-option>
         </el-select>
 
-
-
-
       </template>
 
 
       <div style="margin-top: 20px">
         <el-row v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-          <line-chart :chart-data="lineChartData"/>
+          <line-chart
+            :actualData="actualData" :expectedData="expectedData"/>
         </el-row>
 
       </div>
@@ -85,16 +86,13 @@
           label="操作系统"
           prop="os">
         </el-table-column>
-        <el-table-column label="操作">
+
+        <el-table-column label="价格预测/历史价格">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="showPredict(scope.$index, scope.row)">预测价格
-            </el-button>
-            <el-button
-              size="mini"
               type="warning"
-              @click="showHistory( scope.row,1)">历史价格
+              @click="showHistory( scope.row,1)">查询
             </el-button>
           </template>
         </el-table-column>
@@ -112,7 +110,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {list, history, serverInfo, serverCount} from '../../api/cloud'
+  import {list, history, serverInfo, serverCount,serverPrice} from '../../api/cloud'
   import LineChart from './components/LineChart'
 
 
@@ -128,11 +126,7 @@
     },
     data() {
       return {
-        lineChartData: {
-          expectedData: [100, 120, 161, 134, 105, 160, 165],
-          actualData: [120, 82, 91, 154, 162, 140, 145],
-          timeData: [1, 2, 3, 4, 5, 6, 7]
-        },
+
 
         osList: [
           {text: 'Windows', value: 'Windows'},
@@ -152,20 +146,24 @@
 
 
         algos: [{
-          value: '选项1',
+          value: 1,
           label: '随机森林'
         }, {
-          value: '选项2',
+          value: 2,
           label: '逻辑回归'
-        }], algoselect: '',
+        }],
+        algoselect: 1,
 
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() > Date.now();
           }
         },
-        time1: '',
-        time2: ""
+        startTime: '',
+        endTime: "",
+        expectedDataList:[],
+        expectedData:[],
+        actualData:[]
       }
 
 
@@ -177,31 +175,16 @@
         this.changeTab(2)
         this.showServer = {
           type: row.type,
-          serverRoom: row.serverRoom,
+          location: row.location,
           os: row.os,
+          id: row.id
         }
-        //默认展示一周前到一周后。选择时间后是默认预测一周
-        let data = {
-          //id: row.id
-          start_time:firstIn===1?date.getTime() - 3600 * 1000 * 24 * 7:this.time1,
-          end_time:firstIn===1?date.getTime() + 3600 * 1000 * 24 * 7:this.time2+ 3600 * 1000 * 24 * 7,
-          sever_type:row.type,
-          sever_room:row.serverRoom,
-          os:row.os
-        }
-        history(data).then(response => {
-          this.lineChartData = response.data.list
-          this.loading = false
 
-        })
+        this.getPriceDefault(row.id)
+        this.loading = false
 
       },
 
-
-      showPredict(index, row) {
-
-        this.changeTab(3)
-      },
 
       filterHandler(value, row, column) {
         const property = column['property'];
@@ -255,7 +238,70 @@
           let count = response.data.count
           this.totalCount = count
         })
-      }
+      },
+      getPrice(id, startTime, endTime){
+        if (endTime.length == 0||startTime.length == 0)
+          return
+        this.loading = true
+        let reqData = {
+          startTime:startTime,
+          endTime:endTime,
+          serverId:id
+        }
+        // this.expectedDataList = [{algo:1,data:[
+        //     {value:['2019-12-07',123]},
+        //     {value:['2019-12-08',124]},
+        //     {value:['2019-12-09',125]},
+        //     {value:['2019-12-11',123]},
+        //     {value:['2019-12-12',124]},
+        //     {value:['2019-12-13',125]},
+        //   ]},
+        //   {algo:2,data:[
+        //       {value:['2019-12-07',155]},
+        //       {value:['2019-12-08',15]},
+        //       {value:['2019-12-09',155]},
+        //       {value:['2019-12-11',15]},
+        //       {value:['2019-12-12',55]},
+        //       {value:['2019-12-13',15]},
+        //     ]}
+        //
+        // ]
+        // this.expectedData = this.expectedDataList[0].data
+        // this.actualData = [
+        //   {value:['2019-12-07',12]},
+        //   {value:['2019-12-08',12]},
+        //   {value:['2019-12-09',12]},
+        //   {value:['2019-12-11',12]},
+        //   {value:['2019-12-12',12]},
+        //   {value:['2019-12-13',12]},
+        // ]
+        // this.loading = false
+        serverPrice(reqData).then(response=>{
+          let data = response.data
+          this.expectedDataList = data.expectedData
+          this.actualData = data.actualData
+          this.loading = false
+        }).catch(e=>{
+          this.loading = false
+        })
+      },
+
+      getPriceDefault(id){
+        // 开始时间
+        let sDate = new Date()
+        sDate.setMonth(sDate.getMonth()-9)
+        // let startTime = sDate.getFullYear()+'-'+sDate.getMonth()+'-'+sDate.getDay()
+        // 结束时间
+        let eDate = new Date()
+
+        eDate.setDate(eDate.getDate()+3)
+        // eDate.setMonth(eDate.getMonth()+1)
+
+        // let endTime = eDate.getFullYear()+'-'+(eDate.getMonth())+'-'+eDate.getDay()
+        let endTime = eDate.Format("yyyy-MM-dd");
+        let startTime = sDate.Format("yyyy-MM-dd");
+        this.getPrice(id, startTime, endTime)
+      },
 
     },
     mounted() {
@@ -263,6 +309,33 @@
       this.getServerInfo()
       this.getServerCount()
       this.getTablePage(1)
+      Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+          "M+": this.getMonth() + 1, //月份
+          "d+": this.getDate(), //日
+          "h+": this.getHours(), //小时
+          "m+": this.getMinutes(), //分
+          "s+": this.getSeconds(), //秒
+          "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+          "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+          if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+      }
+    },
+    watch:{
+      algoselect(val) {
+        for (let i = 0; i < this.expectedDataList.length; i++) {
+          if (this.expectedDataList[i].algo == this.algoselect){
+            this.expectedData = this.expectedDataList[i].data
+            return
+          }
+        }
+        this.expectedData = []
+
+      }
     }
 
 

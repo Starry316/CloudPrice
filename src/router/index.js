@@ -53,14 +53,27 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    // redirect: '/dashboard',
+    redirect: '/price',
     children: [{
-      path: 'mainboard',
-      name: 'MainBoard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      path: 'price',
+      name: 'Price',
+      component: () => import('@/views/graph/index'),
+      meta: { title: '价格查询', icon: 'money' }
     }]
   },
+
+  // {
+  //   path: '/price',
+  //   component: Layout,
+  //   // redirect: '/user',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Price',
+  //     component: () => import('@/views/graph/index'),
+  //     meta: { title: '价格查询', icon: 'money' }
+  //   }]
+  // },
+
 
   {
     path: '/user',
@@ -85,17 +98,6 @@ export const constantRoutes = [
   //   }]
   // },
 
-  {
-    path: '/price',
-    component: Layout,
-    // redirect: '/user',
-    children: [{
-      path: 'index',
-      name: 'Price',
-      component: () => import('@/views/graph/index'),
-      meta: { title: '价格查询', icon: 'money' }
-    }]
-  },
 
 ]
 

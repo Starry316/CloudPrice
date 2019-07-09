@@ -12,7 +12,8 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // For example, Mac: sudo npm run
 const port = 9529 // dev port
 // 后端域名和端口，用于代理转发
-const backHost = 'http://119.29.52.224'
+// const backHost = 'http://119.29.52.224'
+const backHost = 'http://localhost'
 const backPort = '8081'
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/

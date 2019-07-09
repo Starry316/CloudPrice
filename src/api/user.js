@@ -9,6 +9,13 @@ export function getRole() {
   })
 }
 
+export function getInfo() {
+  return request({
+    url: baseurl+'/info',
+    method: 'get'
+  })
+}
+
 export function modifyProfile(data) {
   return request({
     url: baseurl+'/modifyProfile',

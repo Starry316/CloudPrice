@@ -59,7 +59,7 @@
                 tabindex="1"
                 maxlength="4"
                 minlength="4"
-                auto-complete="on"
+                auto-complete="off"
               />
             </el-form-item>
 
@@ -146,7 +146,7 @@
                 name="emailCode"
                 type="text"
                 tabindex="1"
-                auto-complete="on">
+                auto-complete="off">
               </el-input>
             </el-form-item>
           </el-form>
@@ -207,7 +207,7 @@ export default {
     }
     const validateLoginCode = (rule, value, callback) => {
       // let reg = new RegExp("*@*\.");
-      if (value.length != 5) {
+      if (value.length != 4) {
         callback(new Error('验证码格式不正确！'))
       } else {
         callback()
@@ -254,8 +254,9 @@ export default {
       resetEmailCount:0,
       emailBtnWaiting:false,
       code:'',
-      loginCodeBaseUrl:"http://119.29.52.224:8081/api/account/login/code",
-      loginCodeUrl:"http://119.29.52.224:8081/api/account/login/code"
+      // loginCodeBaseUrl:"http://119.29.52.224:8081/api/account/login/code",
+      loginCodeBaseUrl:"/back/api/account/login/code",
+      loginCodeUrl:"/back/api/account/login/code"
 
     }
   },
@@ -421,7 +422,7 @@ $cursor: black;
   }
 
   .code-container img{
-    width: 90px;
+    width: 72px;
     height: 34px;
     /*width: 24px;*/
 
