@@ -9,7 +9,9 @@ const state = {
   avatar: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3434964180,3432166125&fm=85&app=63&f=JPEG?w=121&h=75&s=2CC0985EC2A2C7FD0EBDFABE0300501D',
   role:'',
   email:'',
-  introduction:''
+  introduction:'',
+  roleList:'',
+  phone:''
 }
 
 const mutations = {
@@ -25,11 +27,17 @@ const mutations = {
   SET_ROLE: (state, role) => {
     state.role = role
   },
+  SET_ROLELIST: (state, roleList) => {
+    state.roleList = roleList
+  },
   SET_EMAIL: (state, email) => {
     state.email = email
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
+  },
+  SET_PHONE: (state, phone) => {
+    state.phone = phone
   }
 }
 
@@ -41,14 +49,17 @@ const actions = {
       login({ username: username.trim(), password: password,code:code })
         .then(response => {
           const { data } = response
-          const { username, avatar,email,introduction } = data
+          const { username, avatar,email,introduction,roleList,phone } = data
           setToken(username)
           commit('SET_TOKEN', username)
           commit('SET_NAME', username)
           commit('SET_EMAIL', email)
           commit('SET_INTRODUCTION', introduction)
           commit('SET_AVATAR', avatar)
-          resolve()
+          commit('SET_ROLELIST', roleList)
+          commit('SET_PHONE', phone)
+
+          resolve(roleList)
       }).catch(error => {
         reject(error)
       })
@@ -63,11 +74,6 @@ const actions = {
           if (response.status === 200)
             resolve()
           else reject()
-          //   const { data } = response
-        //   const { username, avatar, } = data
-        // setToken(username)
-        // commit('SET_TOKEN', username)
-        // commit('SET_NAME', username)
         resolve()
       }).catch(error => {
         reject(error)

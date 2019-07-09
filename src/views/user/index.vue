@@ -2,7 +2,7 @@
 
   <el-container  class="user-container" v-loading="loading">
       <el-row :gutter="20" style="width: 100%">
-        <el-col  :xs="24" :sm="24" :md="8" :lg="6" :xl="6" style="margin-bottom: 16px;" >
+        <el-col  :xs="24" :sm="24" :md="8" :lg="6" :xl="6" style="margin-bottom: 16px;padding:16px" >
           <el-card :body-style="{ padding: '0px' }">
             <img :src="avatarUrl" width="100%">
 
@@ -46,6 +46,7 @@
                         v-if="!isEditing"
                         slot="reference"
                         @click="editProfile" style="float: right" type="warning" icon="el-icon-edit" circle></el-button>
+                        <!--@click="editProfile" style="float: right" type="warning" icon="el-icon-edit" circle></el-button>-->
                     </el-popover>
                      <el-button
                       v-if="isEditing"
@@ -58,15 +59,15 @@
           </el-card>
         </el-col>
         <el-col  :xs="24" :sm="24" :md="16" :lg="18" :xl="18" style="background-color: white;padding:16px">
-
+        <el-card >
             <h3>个人信息</h3>
-            <span v-if="!isEditing">{{introduction}}</span>
+            <span v-if="!isEditing">{{userIntroduction}}</span>
             <!--个人介绍修改框-->
             <el-input v-if="isEditing" style="margin-bottom: 1rem"
                       type="textarea"
                       placeholder="请输入内容"
                       :autosize="{ minRows: 2, maxRows: 4}"
-                      v-model="introduction"
+                      v-model="userIntroduction"
                       maxlength="30"
                       show-word-limit>
             </el-input>
@@ -75,7 +76,7 @@
 
             <h3>联系方式</h3>
             <span v-if="!isEditing">电话： {{telephone}}<br><br></span>
-            <span v-if="!isEditing">邮箱： {{email}}</span>
+            <span v-if="!isEditing">邮箱： {{userEmail}}</span>
 
 
             <!--电话信息-->
@@ -91,7 +92,7 @@
             <el-input v-if="isEditing" style="margin-bottom: 1rem"
                       type="text"
                       placeholder="请输入内容"
-                      v-model="email">
+                      v-model="userEmail">
             </el-input>
 
             <el-button
@@ -103,7 +104,7 @@
                 Save
             </el-button>
 
-
+        </el-card>
         </el-col>
       </el-row>
   </el-container>
@@ -119,11 +120,11 @@ export default {
 
   data() {
     return {
-      introduction:'用户个人介绍',
+      userIntroduction:'用户个人介绍',
       // 使用isEditing 标识页面编辑状态
       isEditing: false,
-      telephone:'暂无',
-      email:'starry@123.com',
+      telephone:'',
+      userEmail:'starry@123.com',
       loading:false,
       avatarUrl:'',
       uploadAvatarUrl:'https://jsonplaceholder.typicode.com/posts/'
@@ -135,10 +136,15 @@ export default {
   },
 
   methods: {
+    // test(){
+    //   this.$store.commit('user/SET_EMAIL', this.userEmail)
+    //   this.$store.commit('user/SET_INTRODUCTION', this.introduction)
+    // },
     init() {
-      this.avatarUrl = this.store.getters.avatar
-      this.email = this.$store.getters.email
-      this.introduction = this.$store.getters.introduction
+      this.avatarUrl = this.$store.getters.avatar
+      this.userEmail = this.$store.getters.email
+      this.userIntroduction = this.$store.getters.introduction
+      this.telephone = this.$store.getters.phone
 
       //alert(this.$store.getters.name)
     },
@@ -158,16 +164,19 @@ export default {
       this.showLoading();
       this.isEditing = false;
       let data = {
-        introduction: this.introduction,
+        introduction: this.userIntroduction,
         phone: this.telephone,
-        // email:this.email
+        email:this.userEmail
       }
       modifyProfile(data).then(respone =>{
-        let data = respone.data
-        this.introduction = data.introduction
-        this.telephone = data.telephone
-        this.email = data.email
-        // loading.close();
+        // let data = respone.data
+        // this.introduction = data.introduction
+        // this.telephone = data.telephone
+        // this.userEmail = data.email
+        this.$store.commit('user/SET_EMAIL', this.userEmail)
+        this.$store.commit('user/SET_INTRODUCTION', this.userIntroduction)
+
+
         this.hideLoading();
         this.$message({
           message: '修改成功！',
@@ -206,7 +215,9 @@ export default {
     ...mapGetters([
       'avatar',
       'name',
-      'email'
+      'email',
+      'phone',
+      'introduction'
     ])
   },
 
@@ -218,7 +229,8 @@ export default {
 <style scoped>
   .user-container{
     padding: 32px;
-    background-color: #f0f2f5;
+
+    /*background-color: #f0f2f5;*/
     position: relative;
   }
   .time {

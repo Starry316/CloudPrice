@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import pyService from '@/utils/pyservice'
 const baseurl = "/api/crawler"
 
 export function crawlerHistory() {
@@ -32,3 +33,10 @@ export function crawlerStatus() {
     method: 'get'
   })
 }
+export function pytest() {
+  return pyService({
+    url: 'http://127.0.0.1:5000/api/v1/rewrite',
+    method: 'get'
+  })
+}
+

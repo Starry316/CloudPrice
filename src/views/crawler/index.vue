@@ -28,9 +28,11 @@
 
       </div>
     <div class="list-item slider">
+      爬取间隔时间（单位：小时）
       <el-slider
         v-model="interval"
         :disabled="!editing"
+        :min=1
         show-input>
       </el-slider>
     </div>
@@ -71,7 +73,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import LineChart from './components/LineChart'
-import {crawlerHistory, changeConfig, changeStatus, crawlerStatus} from '../../api/crawler'
+import {crawlerHistory, changeConfig, changeStatus, crawlerStatus, pytest} from '../../api/crawler'
 export default {
   components:{
     LineChart
@@ -127,7 +129,8 @@ export default {
       tableCostLabel:{name:"花费时间",fmt:'{value} s/每次爬取'},
       tableRowsLabel:{name:"爬取条目",fmt:'{value} 条目/每次爬取'},
       tableShowLabel:{},
-      editing : false
+      editing : false,
+      pyService:''
     }
   },
   watch: {
@@ -148,9 +151,13 @@ export default {
     async init() {
       this.loading = true
       this.tableShowLabel =this.tableCostLabel
-      // await this.getHistory()
-      // await this.getStatus()
+      await this.getHistory()
+      await this.getStatus()
+
       this.loading = false
+
+
+
 
       //alert(this.$store.getters.name)
     },
@@ -242,7 +249,8 @@ export default {
     editCancel(){
       this.editing = false
       this.interval = this.intervalTmp
-    }
+    },
+
   },
   computed: {
     ...mapGetters([

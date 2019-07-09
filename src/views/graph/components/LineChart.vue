@@ -83,6 +83,9 @@ export default {
 
     setOptions() {
       this.chart.setOption({
+        title: {
+          text: '历史及预测价格'
+        },
         xAxis: {
           //type: 'category',
           // data: timeData,
@@ -147,8 +150,8 @@ export default {
               onclick: () => {
 
                 let excelData = []
-                for (let i = 0; i < this.actualData.length; i++) {
-                  let value = this.actualData[i].value
+                for (let i = 0; i < this.expectedData.length; i++) {
+                  let value = this.expectedData[i].value
                   let item = {
                     time: value[0],
                     price: value[1]

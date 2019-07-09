@@ -28,7 +28,9 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       const hasGetUserRole = store.getters.role
-      if (hasGetUserRole) {
+      const hasGetUserRoleList = store.getters.roleList
+      // if (hasGetUserRole) {
+      if (hasGetUserRoleList) {
         next()
       } else {
         try {
@@ -36,13 +38,17 @@ router.beforeEach(async(to, from, next) => {
           // await store.dispatch('user/getRole')
 
           // route的权限控制
-          // let role = store.getters.role
 
-          let role = "admin"
+          let role = "normal"
+          // store.commit('user/SET_ROLE', role)
+          for (let i = 0; i <roleList.length; i++) {
+            if (roleList[i].name =="ROLE_ADMIN") role = "admin"
+          }
+
           store.commit('user/SET_ROLE', role)
           // vuex中的路由控制侧边栏的渲染
           const accessRoutes = await store.dispatch('permission/generateRoutes', role)
-          await router.addRoutes(adminRoutes)
+          await router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
 
         } catch (error) {

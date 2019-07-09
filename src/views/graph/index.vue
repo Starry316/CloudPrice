@@ -248,25 +248,7 @@
           endTime:endTime,
           serverId:id
         }
-        // this.expectedDataList = [{algo:1,data:[
-        //     {value:['2019-12-07',123]},
-        //     {value:['2019-12-08',124]},
-        //     {value:['2019-12-09',125]},
-        //     {value:['2019-12-11',123]},
-        //     {value:['2019-12-12',124]},
-        //     {value:['2019-12-13',125]},
-        //   ]},
-        //   {algo:2,data:[
-        //       {value:['2019-12-07',155]},
-        //       {value:['2019-12-08',15]},
-        //       {value:['2019-12-09',155]},
-        //       {value:['2019-12-11',15]},
-        //       {value:['2019-12-12',55]},
-        //       {value:['2019-12-13',15]},
-        //     ]}
-        //
-        // ]
-        // this.expectedData = this.expectedDataList[0].data
+
         // this.actualData = [
         //   {value:['2019-12-07',12]},
         //   {value:['2019-12-08',12]},
@@ -281,6 +263,30 @@
           this.expectedDataList = data.expectedData
           this.actualData = data.actualData
           this.loading = false
+
+
+          this.expectedDataList = [{algo:1,data:[
+              {value:['2018-12-07',0.003]},
+              {value:['2018-12-08',0.004]},
+              {value:['2018-12-09',0.005]},
+              {value:['2018-12-11',0.003]},
+              {value:['2018-12-12',0.004]},
+              {value:['2018-12-13',0.005]},
+            ]},
+            {algo:2,data:[
+                {value:['2018-12-07',0.005]},
+                {value:['2018-12-08',0.009]},
+                {value:['2018-12-09',0.005]},
+                {value:['2018-12-11',0.005]},
+                {value:['2018-12-12',0.003]},
+                {value:['2018-12-13',0.002]},
+              ]}
+
+          ]
+          this.expectedData = this.expectedDataList[0].data
+
+
+
         }).catch(e=>{
           this.loading = false
         })

@@ -320,13 +320,65 @@ export default {
       })
     },
 
-    handleLogin() {
+    async handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+          // let { username, password,code }  = this.loginForm
+          //
+          // login({ username: username.trim(), password: password,code:code })
+          //   .then(response => {
+          //     let data  = response.data
+          //     let username = data.username
+          //     let avatar = data.avatar
+          //     let email = data.email
+          //     let introduction = data.introduction
+          //     let role = data.roleList
+          //     // const { username, avatar,email,introduction,role } = data
+          //     setToken(username)
+          //     this.$store.commit('user/SET_TOKEN', username)
+          //     this.$store.commit('user/SET_NAME', username)
+          //     this.$store.commit('user/SET_EMAIL', email)
+          //     this.$store.commit('user/SET_INTRODUCTION', introduction)
+          //     this.$store.commit('user/SET_AVATAR', avatar)
+          //     if (role.length>1)
+          //       this.$store.commit('user/SET_ROLE', "admin")
+          //     else this.$store.commit('user/SET_ROLE', "normal")
+          //
+          //     this.$router.push({ path: this.redirect || '/' })
+          //     this.loading = false
+          //   }).catch(error => {
+          //     alert(error)
+          //     this.loading = false
+          // })
+
+
+
+          this.$store.dispatch('user/login', this.loginForm).then((roleList) => {
+            let role = "normal"
+
+            // store.commit('user/SET_ROLE', role)
+            for (let i = 0; i <roleList.length; i++) {
+              if (roleList[i].name =="ROLE_ADMIN") role = "admin"
+            }
+
+            this.$store.commit('user/SET_ROLE', role)
+
+            this.$store.dispatch('permission/generateRoutes', role).then(accessRoutes=>{
+              this.$router.addRoutes(accessRoutes)
+              this.$router.push({ path: this.redirect || '/' })
+              this.loading = false
+
+
+            })
+
+
+
+
+            // this.$store.dispatch('user/getRole', this.loginForm).then(() => {
+            //   this.$router.push({ path: this.redirect || '/' })
+            //   this.loading = false
+            // })
           }).catch(() => {
             this.loading = false
           })
