@@ -42,3 +42,13 @@ export function serverPrice(data) {
     data: data
   })
 }
+
+
+export function search(data) {
+  return request({
+    url: baseurl+'/search',
+    method: 'post',
+    // params:{data}
+    data: data
+  })
+}

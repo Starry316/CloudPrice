@@ -58,29 +58,42 @@
             </div>
           </el-card>
         </el-col>
-        <el-col  :xs="24" :sm="24" :md="16" :lg="18" :xl="18" style="background-color: white;padding:16px">
-        <el-card >
-            <h3>个人信息</h3>
-            <span v-if="!isEditing">{{userIntroduction}}</span>
-            <!--个人介绍修改框-->
-            <el-input v-if="isEditing" style="margin-bottom: 1rem"
-                      type="textarea"
-                      placeholder="请输入内容"
-                      :autosize="{ minRows: 2, maxRows: 4}"
-                      v-model="userIntroduction"
-                      maxlength="30"
-                      show-word-limit>
-            </el-input>
-            <!--个人介绍修改框结束-->
+        <el-col  :xs="24" :sm="24" :md="16" :lg="18" :xl="18" style="padding:16px;">
+        <el-card style="min-height: 500px">
+          <div slot="header" class="clearfix">
+            <span>个人信息</span>
+          </div>
+          <div style="margin-bottom: 1rem">
+            <span><strong>个人介绍</strong></span>
+            <b></b>
+          </div>
+         <div style="padding-left: 1rem">
+           <span v-if="!isEditing">{{userIntroduction}}</span>
+           <!--个人介绍修改框-->
+           <el-input v-if="isEditing" style="margin-bottom: 1rem"
+                     type="textarea"
+                     placeholder="请输入内容"
+                     :autosize="{ minRows: 2, maxRows: 4}"
+                     v-model="userIntroduction"
+                     maxlength="30"
+                     show-word-limit>
+           </el-input>
+         </div>
+          <!--个人介绍修改框结束-->
 
 
-            <h3>联系方式</h3>
-            <span v-if="!isEditing">电话： {{telephone}}<br><br></span>
-            <span v-if="!isEditing">邮箱： {{userEmail}}</span>
+          <div style="margin:1rem  0 ">
+            <span><strong>联系方式</strong></span>
+            <b></b>
+          </div>
+          <div style="">
 
-
+            <div v-if="!isEditing"><strong>手机</strong></div>
+            <div v-if="!isEditing" style="padding-left: 1rem;margin: 1rem 0">{{telephone}}</div>
+            <div v-if="!isEditing"><strong>邮箱</strong></div>
+            <div v-if="!isEditing" style="padding-left: 1rem;margin: 1rem 0">{{userEmail}}</div>
             <!--电话信息-->
-            <label v-if="isEditing">电话： </label>
+            <label v-if="isEditing">手机： </label>
             <el-input v-if="isEditing" style="margin-bottom: 1rem"
                       type="text"
                       placeholder="请输入内容"
@@ -103,7 +116,7 @@
               round>
                 Save
             </el-button>
-
+          </div>
         </el-card>
         </el-col>
       </el-row>
@@ -178,7 +191,7 @@ export default {
 
 
         this.hideLoading();
-        this.$message({
+        this.$data.message({
           message: '修改成功！',
           type: 'success'
         });
@@ -189,7 +202,7 @@ export default {
     handleAvatarSuccess(res, file) {
       console.log(res.data)
       this.hideLoading()
-      this.$message.success("上传成功")
+      this.$data.message.success("上传成功")
       this.avatarUrl = "/back/file/"+res.data
 
       this.$store.commit('user/SET_AVATAR', this.avatarUrl)
@@ -200,11 +213,11 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.$data.message.error('上传头像图片只能是 JPG 格式!');
         this.hideLoading()
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$data.message.error('上传头像图片大小不能超过 2MB!');
         this.hideLoading()
       }
       return isJPG && isLt2M;
@@ -230,8 +243,9 @@ export default {
   .user-container{
     padding: 32px;
 
-    /*background-color: #f0f2f5;*/
+    background-color: #f0f2f5;
     position: relative;
+    min-height: calc(100vh - 84px)
   }
   .time {
     font-size: 13px;

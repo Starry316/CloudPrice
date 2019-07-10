@@ -3,11 +3,33 @@
   <el-container class="user-container" direction="vertical" v-loading="loading">
     <h3>爬虫配置</h3>
 
+
       <span>爬虫运行状态：
         <el-tag v-if="status == 1">运行中</el-tag>
         <el-tag v-if="status == 2" type="success">正在爬取</el-tag>
         <el-tag v-if="status == 0" type="danger">暂停运行</el-tag>
       </span>
+
+
+    <div class="list-item ">
+      爬虫状态：
+      <el-select v-model="tableSelect" style="margin-top: 15px;margin-left:15px">
+        <el-option
+          v-for="item in tableLabels"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
+
+    <div style="margin-top: 20px">
+      <el-row v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+        <line-chart
+          :chartData="crawlData" :tableShowLabel="tableShowLabel"/>
+      </el-row>
+
+    </div>
       <div class="list-item">
         <el-tooltip class="item" effect="dark" :content="tipContent[0]" placement="bottom-end">
           <el-switch
@@ -25,7 +47,6 @@
         <el-button v-if="!editing" @click="toEdit" style="margin-left: 2rem">修改爬取间隔</el-button>
         <el-button v-if="editing" @click="editCancel" style="margin-left: 2rem">取消</el-button>
         <el-button v-if="editing" @click="saveConfig" style="margin-left: 2rem">保存</el-button>
-
       </div>
     <div class="list-item slider">
       爬取间隔时间（单位：小时）
@@ -46,25 +67,7 @@
             预计下一次爬取时间： {{nextCrawledTime}}
           </span>
       </div>
-    <div class="list-item ">
-      爬虫状态：
-      <el-select v-model="tableSelect" style="margin-top: 15px;margin-left:15px">
-        <el-option
-          v-for="item in tableLabels"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-    </div>
 
-    <div style="margin-top: 20px">
-      <el-row v-loading="loading" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-        <line-chart
-          :chartData="crawlData" :tableShowLabel="tableShowLabel"/>
-      </el-row>
-
-    </div>
 
     </el-container>
 
@@ -126,8 +129,8 @@ export default {
       status:0,
       tableSelect:1,
       tipContent:["启动并按照预计时间爬取","停止爬虫"],
-      tableCostLabel:{name:"花费时间",fmt:'{value} s/每次爬取'},
-      tableRowsLabel:{name:"爬取条目",fmt:'{value} 条目/每次爬取'},
+      tableCostLabel:{name:"花费时间",fmt:'{value} s/次'},
+      tableRowsLabel:{name:"爬取条目",fmt:'{value} 行/次'},
       tableShowLabel:{},
       editing : false,
       pyService:''
@@ -164,14 +167,14 @@ export default {
     async getHistory(){
       crawlerHistory().then(response=>{
         let data = response.data
-        let startTime = data.startTime
-        let endTime = data.endTime
-        let costTime = data.costTime
-        let rows = data.rows
+        // let startTime = data.startTime
+        // let endTime = data.endTime
+        // let costTime = data.costTime
+        // let rows = data.rows
 
-        // let startTime = ["2019-06-06 12:30:12","2019-06-06 15:30:12","2019-06-07 12:30:12","2019-06-07 18:30:12"]
-        // let costTime  = ["1445","3555","111","2222"]
-        // let rows = [1,2,3,4]
+        let startTime = ["2019-06-06 12:30:12","2019-06-06 15:30:12","2019-06-07 12:30:12","2019-06-07 18:30:12"]
+        let costTime  = ["445","355","111","222"]
+        let rows = [1,2,3,4]
         for (let i = 0; i < startTime.length; i++) {
           let costItem = {
             value:[
@@ -195,9 +198,13 @@ export default {
       })
     },
     async getStatus(){
+
       crawlerStatus().then(response=>{
-        let data = response.data
-        this.interval = data.interval
+
+        let data = response.data.data
+        alert(data.status)
+
+        this.interval = parseInt(data.interval)
         this.lastCrawledTime = data.lastTime
         this.nextCrawledTime = data.nextTime
         this.status = data.status
@@ -213,7 +220,7 @@ export default {
       changeConfig(data).then(response=>{
         this.loading = false
         this.editing = false
-        this.$message({
+        this.$data.message({
           message: '修改成功！',
           type: 'success'
         });
@@ -225,15 +232,36 @@ export default {
     changeCrawlerStatus(status){
 
       this.loading = true
-      changeStatus({status:status}).then(response=>{
-        // 如果status为 2 是从强制启动改变的状态
-        if (status == 2) this.switchValue = true
-        this.loading = false
-      }).catch(e=>{
-        if (status != 2)
-          this.switchValue = !this.switchValue
-        this.loading = false
-      })
+      if (status != 0 && (this.status == 1 || this.status == 2)){
+        changeStatus({status:0}).then(response=>{
+          // 如果status为 2 是从强制启动改变的状态
+          changeStatus({status:status}).then(response=>{
+            // 如果status为 2 是从强制启动改变的状态
+            if (status == 2) this.switchValue = true
+            this.loading = false
+          }).catch(e=>{
+            if (status != 2)
+              this.switchValue = !this.switchValue
+            this.loading = false
+          })
+        }).catch(e=>{
+          if (status != 2)
+            this.switchValue = !this.switchValue
+          this.loading = false
+        })
+
+      }
+      else {
+        changeStatus({status:status}).then(response=>{
+          // 如果status为 2 是从强制启动改变的状态
+          if (status == 2) this.switchValue = true
+          this.loading = false
+        }).catch(e=>{
+          if (status != 2)
+            this.switchValue = !this.switchValue
+          this.loading = false
+        })
+      }
     },
     switchCrawlerStatus(){
       if (this.switchValue) {
@@ -260,6 +288,11 @@ export default {
   },
 
   mounted(){
+    // pytest().then(resp=>{
+    //   alert(1)
+    // }).catch(()=>{
+    //   alert(2)
+    // })
     this.init();
   }
 }

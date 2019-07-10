@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import pyService from '@/utils/pyservice'
 const baseurl = "/api/crawler"
-
+const pyhost = "http://192.168.43.216:5000"
 export function crawlerHistory() {
   return request({
     url: baseurl+'/history',
@@ -11,8 +11,8 @@ export function crawlerHistory() {
 
 
 export function changeConfig(data) {
-  return request({
-    url: baseurl+'/changeConfig',
+  return pyService({
+    url: pyhost + baseurl+'/changeConfig',
     method: 'post',
     data:data
   })
@@ -20,23 +20,24 @@ export function changeConfig(data) {
 
 
 export function changeStatus(data) {
-  return request({
-    url: baseurl+'/changeStatus',
+  return pyService({
+    url: pyhost + baseurl+'/changeStatus',
     method: 'post',
     data:data
   })
 }
 
 export function crawlerStatus() {
-  return request({
-    url: baseurl+'/status',
+  return pyService({
+    url: pyhost + baseurl+'/status',
     method: 'get'
   })
 }
 export function pytest() {
   return pyService({
-    url: 'http://127.0.0.1:5000/api/v1/rewrite',
-    method: 'get'
+    url: pyhost+'/py/api/crawler',
+    method: 'post',
+    data:{text:"a"}
   })
 }
 

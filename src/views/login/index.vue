@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
-    <el-row :gutter="20"  type="flex" justify="center" :loading="loading">
+    <div class="overlay"></div>
+    <el-row :gutter="20"  type="flex" justify="center" :loading="loading" style="  z-index:900;">
       <el-col :xs="24" :sm="24" :md="12" :lg="9" :xl="9" style="transition: all 0.3s"  :loading="loading">
         <el-collapse-transition>
         <el-card v-if="isLogin" >
@@ -178,6 +179,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import { login,loginCode,registerMail,register } from '@/api/account'
+import {  pytest } from '@/api/crawler'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { Message } from 'element-ui'
 export default {
@@ -423,7 +425,6 @@ export default {
 
   },
   mounted(){
-
   }
 }
 </script>
@@ -440,6 +441,16 @@ $cursor: black;
   .login-container .el-input input {
     color: $cursor;
   }
+}
+
+.overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(55,55,40,0.3) fixed;
+  z-index: 800;
 }
 
 /* reset element-ui css */
@@ -495,9 +506,11 @@ $dark_gray:#889aa4;
 $light_gray:#eee;
 
 .login-container {
+  z-index:1;
   min-height: 100%;
   width: 100%;
-  background-color: #eee;
+  /*background-color: #eee; */
+  background-image: url("../../assets/background_images/metropolis_at_night-wallpaper-1440x900.jpg");
   overflow: hidden;
   padding-top: 64px;
   @media screen and (max-width:992px){

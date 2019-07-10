@@ -60,6 +60,32 @@
     </div>
     <div v-if="showTab==1">
       <div class="dashboard-text">服务器列表</div>
+
+      <div class="filter-container">
+        <el-select v-model="filterLocation" placeholder="机房" style="width: 200px;" class="filter-item">
+          <el-option v-for="item in locationList" :key="item.value" :label="item.value" :value="item.value" />
+
+        </el-select>
+        <el-select v-model="filterType" placeholder="型号"  style="width: 90px" class="filter-item">
+          <el-option v-for="item in typeList" :key="item.value" :label="item.value" :value="item.value" />
+        </el-select>
+        <el-select v-model="filterOs" placeholder="系统" class="filter-item" style="width: 130px">
+          <el-option v-for="item in osList" :key="item.value" :label="item.value" :value="item.value" />
+        </el-select>
+        <el-button  class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+          搜索
+        </el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="resetTable">
+          重置
+        </el-button>
+        <!--<el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">-->
+          <!--Export-->
+        <!--</el-button>-->
+        <!--<el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">-->
+          <!--reviewer-->
+        <!--</el-checkbox>-->
+      </div>
+
       <el-table
         height="60vh"
         v-loading="loading"
@@ -110,7 +136,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {list, history, serverInfo, serverCount,serverPrice} from '../../api/cloud'
+  import {list, history, serverInfo, serverCount,serverPrice,search} from '../../api/cloud'
   import LineChart from './components/LineChart'
 
 
@@ -142,6 +168,9 @@
         search: '',
         showTab: 1,
         totalCount:50,
+        filterLocation:'',
+        filterType:'',
+        filterOs:'',
 
 
 
@@ -309,6 +338,45 @@
         this.getPrice(id, startTime, endTime)
       },
 
+
+      handleFilter(){
+        // if (!this.filterLocation||this.filterType||this.filterOs)
+        //   return
+        this.loading = true
+        if (!this.filterLocation.length>0 && !this.filterType.length>0 && !this.filterOs.length>0) {
+          this.$data.message({
+            message: '请至少选择一项筛选',
+            type: 'error'
+          });
+          return
+        }
+        let data = {
+          location:this.filterLocation,
+          os:this.filterOs,
+          type:this.filterType,
+        }
+        search(data).then(response=>{
+          this.totalCount = 10 // 页数为1
+          this.bufferTableData.clear()
+          this.tableData = response.data
+          this.loading = false
+        }).catch(()=>{
+          this.$data.message({
+            message: '发生了错误',
+            type: 'error'
+          });
+          this.getServerCount()
+          this.getTablePage(1)
+          this.loading = false
+        })
+      },
+      resetTable(){
+        this.bufferTableData = new Map()
+        // this.getServerInfo()
+        this.getServerCount()
+        this.getTablePage(1)
+      }
+
     },
     mounted() {
       this.bufferTableData = new Map()
@@ -372,5 +440,15 @@
   .pagination {
     text-align: center;
     margin-top: 2rem;
+  }
+
+  .filter-container {
+    padding-bottom: 10px;
+
+    .filter-item {
+      display: inline-block;
+      vertical-align: middle;
+      margin-bottom: 10px;
+    }
   }
 </style>
