@@ -146,7 +146,7 @@ export default {
             myExportExpectExcel: {
               show: true,
               title: '导出预计价格excel',
-              icon: 'image://http://echarts.baidu.com/images/favicon.png',
+              icon: 'image:/excel.svg',
               onclick: () => {
 
                 let excelData = []
@@ -171,7 +171,7 @@ export default {
             myExportHistoryExcel:{
                 show:true,
                 title:'导出历史价格excel',
-                icon:'image://http://echarts.baidu.com/images/favicon.png',
+                icon:'image:/excel.svg',
                 onclick: ()=> {
 
                   let excelData = []
@@ -229,33 +229,18 @@ export default {
           // 实际价格曲线配置
           {
             name: 'actual',
-            // itemStyle: {
-            //   normal: {
-            //     color: '#FF005A',
-            //     lineStyle: {
-            //       color: '#FF005A',
-            //       width: 2
-            //     }
-            //   }
-            // },
             smooth: true,
             type: 'line',
             // data: expectedData,
             data: this.actualData,
             animationDuration: 2800,
             animationEasing: 'cubicInOut',
-            // markPoint: {
-            //   data: [
-            //     {type: 'max', name: '最大值'},
-            //     {type: 'min', name: '最小值'}
-            //   ]
-            // },
-            // markLine: {
-            //   data: [
-            //     {type: 'average', name: '平均值'},
-            //
-            //   ]
-            // }
+            markLine: {
+              data: [
+                {type: 'average', name: '平均值'},
+
+              ]
+            }
           },
 
         ]

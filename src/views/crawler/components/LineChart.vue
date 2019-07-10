@@ -180,6 +180,7 @@ export default {
           feature: {
             dataView: {show: true, readOnly: false},
             restore: {show: true},
+            saveAsImage: {show: true},
             },
 
         },

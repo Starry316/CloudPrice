@@ -138,7 +138,7 @@
   import {mapGetters} from 'vuex'
   import {list, history, serverInfo, serverCount,serverPrice,search} from '../../api/cloud'
   import LineChart from './components/LineChart'
-
+  import { Message } from 'element-ui'
 
   export default {
     components: {
@@ -344,10 +344,7 @@
         //   return
         this.loading = true
         if (!this.filterLocation.length>0 && !this.filterType.length>0 && !this.filterOs.length>0) {
-          this.$data.message({
-            message: '请至少选择一项筛选',
-            type: 'error'
-          });
+          Message.error("请至少选择一项筛选")
           return
         }
         let data = {
@@ -361,10 +358,8 @@
           this.tableData = response.data
           this.loading = false
         }).catch(()=>{
-          this.$data.message({
-            message: '发生了错误',
-            type: 'error'
-          });
+          Message.error('发生了错误')
+
           this.getServerCount()
           this.getTablePage(1)
           this.loading = false

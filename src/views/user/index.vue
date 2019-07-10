@@ -126,6 +126,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { modifyProfile, getInfo} from "../../api/user";
+import { Message } from 'element-ui'
 import ThemePicker from '@/components/ThemePicker'
 
 
@@ -191,10 +192,8 @@ export default {
 
 
         this.hideLoading();
-        this.$data.message({
-          message: '修改成功！',
-          type: 'success'
-        });
+        Message.success("修改成功")
+
       }).catch(e =>{
         this.hideLoading();
       });
@@ -202,7 +201,7 @@ export default {
     handleAvatarSuccess(res, file) {
       console.log(res.data)
       this.hideLoading()
-      this.$data.message.success("上传成功")
+      Message.success("上传成功")
       this.avatarUrl = "/back/file/"+res.data
 
       this.$store.commit('user/SET_AVATAR', this.avatarUrl)
@@ -213,11 +212,12 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$data.message.error('上传头像图片只能是 JPG 格式!');
+        Message.error('上传头像图片只能是 JPG 格式!')
+        // this.$data.message.error();
         this.hideLoading()
       }
       if (!isLt2M) {
-        this.$data.message.error('上传头像图片大小不能超过 2MB!');
+        Message.error('上传头像图片大小不能超过 2MB!')
         this.hideLoading()
       }
       return isJPG && isLt2M;

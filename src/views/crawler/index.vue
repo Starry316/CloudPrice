@@ -77,6 +77,7 @@
 import { mapGetters } from 'vuex'
 import LineChart from './components/LineChart'
 import {crawlerHistory, changeConfig, changeStatus, crawlerStatus, pytest} from '../../api/crawler'
+import { Message } from 'element-ui'
 export default {
   components:{
     LineChart
@@ -220,10 +221,8 @@ export default {
       changeConfig(data).then(response=>{
         this.loading = false
         this.editing = false
-        this.$data.message({
-          message: '修改成功！',
-          type: 'success'
-        });
+        Message.success('修改成功！')
+
       }).catch(e=>{
         this.editCancel()
         this.loading = false

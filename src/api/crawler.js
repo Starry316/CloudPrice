@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import pyService from '@/utils/pyservice'
 const baseurl = "/api/crawler"
 const pyhost = "http://192.168.43.216:5000"
 export function crawlerHistory() {

@@ -27,9 +27,9 @@ import '@/permission' // permission control
 // if (process.env.NODE_ENV === 'production') {
 //   mockXHR()
 // }
-// VueCookies引入
-import VueCookies from 'vue-cookies'
-Vue.use(VueCookies)
+// // VueCookies引入
+// import VueCookies from 'vue-cookies'
+// Vue.use(VueCookies)
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 
