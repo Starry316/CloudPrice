@@ -4,11 +4,7 @@
     <h3>爬虫配置</h3>
 
 
-      <span>爬虫运行状态：
-        <el-tag v-if="status == 1">运行中</el-tag>
-        <el-tag v-if="status == 2" type="success">正在爬取</el-tag>
-        <el-tag v-if="status == 0" type="danger">暂停运行</el-tag>
-      </span>
+
 
 
     <div class="list-item ">
@@ -30,6 +26,12 @@
       </el-row>
 
     </div>
+
+    <span>爬虫运行状态：
+        <el-tag v-if="status == 1">运行中</el-tag>
+        <el-tag v-if="status == 2" type="success">正在爬取</el-tag>
+        <el-tag v-if="status == 0" type="danger">暂停运行</el-tag>
+      </span>
       <div class="list-item">
         <el-tooltip class="item" effect="dark" :content="tipContent[0]" placement="bottom-end">
           <el-switch
