@@ -22,7 +22,7 @@ export default {
     },
     height: {
       type: String,
-      default: '350px'
+      default: '500px'
     },
     autoResize: {
       type: Boolean,
@@ -84,7 +84,16 @@ export default {
     setOptions() {
       this.chart.setOption({
         title: {
-          text: '历史及预测价格'
+          text: '历史及预测价格',
+          x: '20',
+          top: '20',
+          textStyle: {
+            fontSize: '22'
+          },
+          subtextStyle: {
+            color: '#90979c',
+            fontSize: '16'
+          }
         },
         xAxis: {
           //type: 'category',
@@ -99,7 +108,7 @@ export default {
           left: 10,
           right: 10,
           bottom: 20,
-          top: 30,
+          top: 80,
           containLabel: true
         },
         tooltip: {
@@ -146,7 +155,7 @@ export default {
             myExportExpectExcel: {
               show: true,
               title: '导出预计价格excel',
-              icon: 'image:/excel.svg',
+              icon: 'image:///excel.svg',
               onclick: () => {
 
                 let excelData = []
@@ -171,7 +180,7 @@ export default {
             myExportHistoryExcel:{
                 show:true,
                 title:'导出历史价格excel',
-                icon:'image:/excel.svg',
+                icon:'image:///images/excelicon.png',
                 onclick: ()=> {
 
                   let excelData = []
@@ -194,6 +203,35 @@ export default {
           }
         },
 
+
+
+        dataZoom: [{
+          show: true,
+          height: 20,
+          xAxisIndex: [
+            0
+          ],
+          bottom: 0,
+          start: 10,
+          end: 80,
+          handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+          handleSize: '110%',
+          handleStyle: {
+            color: '#000'
+
+          },
+          textStyle: {
+            color: '#000' },
+            borderColor: '#90979c'
+
+        }, {
+          type: 'inside',
+          show: true,
+          height: 15,
+          start: 1,
+          end: 35
+        }],
+
         series: [
           // 预测数据曲线
           {
@@ -208,22 +246,10 @@ export default {
           },
           smooth: true,
           type: 'line',
-          // data: expectedData,
           data: this.expectedData,
           animationDuration: 2800,
           animationEasing: 'cubicInOut',
-          // markPoint: {
-          //   data: [
-          //     {type: 'max', name: '最大值'},
-          //     {type: 'min', name: '最小值'}
-          //   ]
-          // },
-          // markLine: {
-          //   data: [
-          //     {type: 'average', name: '平均值'},
-          //
-          //   ]
-          // }
+
         },
 
           // 实际价格曲线配置

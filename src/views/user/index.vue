@@ -59,7 +59,7 @@
           </el-card>
         </el-col>
         <el-col  :xs="24" :sm="24" :md="16" :lg="18" :xl="18" style="padding:16px;">
-        <el-card style="min-height: 500px">
+        <el-card style="min-height: 400px">
           <div slot="header" class="clearfix">
             <span>个人信息</span>
           </div>
@@ -67,7 +67,7 @@
             <span><strong>个人介绍</strong></span>
             <b></b>
           </div>
-         <div style="padding-left: 1rem">
+         <div style="padding-left: 1rem; ">
            <span v-if="!isEditing">{{userIntroduction}}</span>
            <!--个人介绍修改框-->
            <el-input v-if="isEditing" style="margin-bottom: 1rem"

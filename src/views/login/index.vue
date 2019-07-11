@@ -402,7 +402,7 @@ export default {
             this.loginForm.username = this.signupForm.name
             this.toLogin()
             // this.$router.push({ path: this.redirect || '/' })
-            // this.loading = false
+            this.loading = false
           }).catch(() => {
             Message.error("注册失败！请稍后重试")
             this.toLogin()

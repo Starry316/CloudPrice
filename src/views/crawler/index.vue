@@ -41,8 +41,8 @@
             inactive-text="关闭爬虫">
           </el-switch>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" @click="changeCrawlerStatus(2)" content="启动并立刻进行一次爬取" placement="bottom-end">
-          <el-button style="margin-left: 2rem">立即启动</el-button>
+        <el-tooltip class="item" effect="dark"  content="启动并立刻进行一次爬取" placement="bottom-end">
+          <el-button @click="changeCrawlerStatus(2)" style="margin-left: 2rem">立即启动</el-button>
         </el-tooltip>
         <el-button v-if="!editing" @click="toEdit" style="margin-left: 2rem">修改爬取间隔</el-button>
         <el-button v-if="editing" @click="editCancel" style="margin-left: 2rem">取消</el-button>
@@ -168,14 +168,14 @@ export default {
     async getHistory(){
       crawlerHistory().then(response=>{
         let data = response.data
-        // let startTime = data.startTime
-        // let endTime = data.endTime
-        // let costTime = data.costTime
-        // let rows = data.rows
+        let startTime = data.startTime
+        let endTime = data.endTime
+        let costTime = data.costTime
+        let rows = data.rows
 
-        let startTime = ["2019-06-06 12:30:12","2019-06-06 15:30:12","2019-06-07 12:30:12","2019-06-07 18:30:12"]
-        let costTime  = ["445","355","111","222"]
-        let rows = [1,2,3,4]
+        // let startTime = ["2019-06-06 12:30:12","2019-06-06 15:30:12","2019-06-07 12:30:12","2019-06-07 18:30:12"]
+        // let costTime  = ["445","355","111","222"]
+        // let rows = [1,2,3,4]
         for (let i = 0; i < startTime.length; i++) {
           let costItem = {
             value:[
@@ -203,7 +203,7 @@ export default {
       crawlerStatus().then(response=>{
 
         let data = response.data.data
-        alert(data.status)
+        // alert(data.status)
 
         this.interval = parseInt(data.interval)
         this.lastCrawledTime = data.lastTime
@@ -228,35 +228,60 @@ export default {
         this.loading = false
       })
     },
-    changeCrawlerStatus(status){
+    changeCrawlerStatus(changeToStatus){
 
       this.loading = true
-      if (status != 0 && (this.status == 1 || this.status == 2)){
-        changeStatus({status:0}).then(response=>{
-          // 如果status为 2 是从强制启动改变的状态
-          changeStatus({status:status}).then(response=>{
+      if (this.status != 0 ){
+        if ((changeToStatus == 1 || changeToStatus == 2)){
+          changeStatus({status:0}).then(response=>{
             // 如果status为 2 是从强制启动改变的状态
-            if (status == 2) this.switchValue = true
+            changeStatus({status:changeToStatus}).then(response=>{
+              // 如果status为 2 是从强制启动改变的状态
+
+              this.switchValue = true
+              // console.log(changeToStatus)
+              this.status = changeToStatus
+              this.loading = false
+            }).catch(e=>{
+              // if (changeToStatus != 2)
+              this.switchValue = !this.switchValue
+              this.loading = false
+            })
+          }).catch(e=>{
+            // if (changeToStatus != 2)
+              this.switchValue = true
+              this.loading = false
+          })
+        }
+        else {
+          changeStatus({status:changeToStatus}).then(response=>{
+            // 如果status为 2 是从强制启动改变的状态
+            if (changeToStatus == 2) {
+
+              this.switchValue = true
+            }
+            console.log(changeToStatus)
+            this.status = changeToStatus
             this.loading = false
           }).catch(e=>{
-            if (status != 2)
+            if (changeToStatus != 2)
               this.switchValue = !this.switchValue
             this.loading = false
           })
-        }).catch(e=>{
-          if (status != 2)
-            this.switchValue = !this.switchValue
-          this.loading = false
-        })
-
+        }
       }
       else {
-        changeStatus({status:status}).then(response=>{
+        changeStatus({status:changeToStatus}).then(response=>{
           // 如果status为 2 是从强制启动改变的状态
-          if (status == 2) this.switchValue = true
+          if (changeToStatus == 2) {
+
+            this.switchValue = true
+          }
+          console.log(changeToStatus)
+          this.status = changeToStatus
           this.loading = false
         }).catch(e=>{
-          if (status != 2)
+          if (changeToStatus != 2)
             this.switchValue = !this.switchValue
           this.loading = false
         })

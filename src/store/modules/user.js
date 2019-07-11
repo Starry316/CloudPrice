@@ -55,7 +55,7 @@ const actions = {
           commit('SET_NAME', username)
           commit('SET_EMAIL', email)
           commit('SET_INTRODUCTION', introduction)
-          commit('SET_AVATAR', avatar)
+          commit('SET_AVATAR', '/back/file/'+avatar)
           commit('SET_ROLELIST', roleList)
           commit('SET_PHONE', phone)
 
